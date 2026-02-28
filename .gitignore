@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+apps/api/src/generated
+.turbo
+apps/platform/node_modules
+apps/platform/dist
+
+docs

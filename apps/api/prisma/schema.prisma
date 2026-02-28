@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────── Enums ────────────
+
+enum UserPlan {
+  free
+  pro
+  team
+}
+
+enum GroupCategory {
+  tech
+  creative
+  business
+  productivity
+  casual
+}
+
+enum GroupMemberRole {
+  admin
+  member
+}
+
+enum JoinRequestStatus {
+  pending
+  approved
+  rejected
+}
+
+enum SubscriptionStatus {
+  active
+  canceled
+  past_due
+  expired
+}
+
+enum WifiSpeed {
+  slow
+  medium
+  fast
+  very_fast
+}
+
+enum NoiseLevel {
+  quiet
+  medium
+  buzzy
+  loud
+}
+
+enum ChatType {
+  whatsapp
+  telegram
+  discord
+}
+
+// ──────────── Models ────────────
+
+model User {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String    @unique
+  password        String?
+  googleId        String?   @unique @map("google_id")
+  name            String
+  avatarUrl       String?   @map("avatar_url")
+  bio             String?   @db.Text
+  jobTitle        String?   @map("job_title")
+  company         String?
+  location        String?
+  profileComplete Boolean   @default(false) @map("profile_complete")
+  plan            UserPlan  @default(free)
+  planExpires     DateTime? @map("plan_expires")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  adminGroups  Group[]            @relation("GroupAdmin")
+  memberships  GroupMember[]
+  joinRequests GroupJoinRequest[]
+  subscription Subscription?
+
+  @@index([email])
+  @@index([googleId])
+  @@index([plan])
+  @@map("users")
+}
+
+model Group {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String
+  description     String        @db.Text
+  category        GroupCategory
+  adminId         String        @db.Uuid @map("admin_id")
+  spaceId         String?       @db.Uuid @map("space_id")
+  schedule        String
+  timeStart       String        @map("time_start")
+  timeEnd         String        @map("time_end")
+  maxMembers      Int           @default(8) @map("max_members")
+  vibe            String?
+  isOpen          Boolean       @default(true) @map("is_open")
+  tags            Json          @default("[]")
+  color           String        @default("#635BFF")
+  requireApproval Boolean       @default(true) @map("require_approval")
+  chatLink        String?       @map("chat_link")
+  chatType        ChatType?     @map("chat_type")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  admin        User               @relation("GroupAdmin", fields: [adminId], references: [id])
+  space        Space?             @relation(fields: [spaceId], references: [id])
+  members      GroupMember[]
+  joinRequests GroupJoinRequest[]
+
+  @@index([adminId])
+  @@index([spaceId])
+  @@index([category])
+  @@index([isOpen])
+  @@index([createdAt])
+  @@map("groups")
+}
+
+model GroupMember {
+  id       String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId   String          @db.Uuid @map("user_id")
+  groupId  String          @db.Uuid @map("group_id")
+  role     GroupMemberRole @default(member)
+  joinedAt DateTime        @default(now()) @map("joined_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+  @@index([userId])
+  @@index([groupId])
+  @@map("group_members")
+}
+
+model GroupJoinRequest {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  groupId         String            @db.Uuid @map("group_id")
+  userId          String            @db.Uuid @map("user_id")
+  status          JoinRequestStatus @default(pending)
+  message         String?           @db.Text
+  rejectionReason String?           @db.Text @map("rejection_reason")
+  reviewedAt      DateTime?         @map("reviewed_at")
+  createdAt       DateTime          @default(now()) @map("created_at")
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([userId, groupId])
+  @@index([groupId, status])
+  @@index([userId])
+  @@map("group_join_requests")
+}
+
+model Space {
+  id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  area       String
+  address    String?
+  latitude   Float?
+  longitude  Float?
+  wifiSpeed  WifiSpeed  @default(medium) @map("wifi_speed")
+  noiseLevel NoiseLevel @default(medium) @map("noise_level")
+  hasPower   Boolean    @default(true) @map("has_power")
+  priceRange String?    @map("price_range")
+  rating     Float      @default(0)
+  seatCount  Int?       @map("seat_count")
+  createdAt  DateTime   @default(now()) @map("created_at")
+
+  groups Group[]
+
+  @@index([area])
+  @@index([rating])
+  @@map("spaces")
+}
+
+model Subscription {
+  id                  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId              String             @unique @db.Uuid @map("user_id")
+  plan                UserPlan
+  mayarSubscriptionId String?            @map("mayar_subscription_id")
+  status              SubscriptionStatus @default(active)
+  currentPeriodStart  DateTime           @map("current_period_start")
+  currentPeriodEnd    DateTime           @map("current_period_end")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
