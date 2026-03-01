@@ -6,6 +6,8 @@ import { DiscoverPage } from "./routes/discover/index";
 import { GroupDetailPage } from "./routes/groups/$id";
 import { GroupNewPage } from "./routes/groups/new";
 import { SpacesPage } from "./routes/spaces/index";
+import { GroupsPage } from "./routes/groups/index";
+import { UpgradePage } from "./routes/upgrade/index";
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({ component: RootLayout });
@@ -49,15 +51,10 @@ const groupNewRoute = createRoute({
   component: GroupNewPage,
 });
 
-// Phase 10 — replaced when implemented
 const groupsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/groups",
-  component: () => (
-    <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
-      My Groups — Phase 10
-    </div>
-  ),
+  component: GroupsPage,
 });
 
 const spacesRoute = createRoute({
@@ -76,15 +73,10 @@ const profileRoute = createRoute({
   ),
 });
 
-// Phase 10
 const upgradeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/upgrade",
-  component: () => (
-    <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
-      Upgrade — Phase 10
-    </div>
-  ),
+  component: UpgradePage,
 });
 
 // ── Route tree ────────────────────────────────────────────────────────────────
