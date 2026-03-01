@@ -116,6 +116,48 @@ async function main() {
     },
   });
 
+  const hendra = await prisma.user.create({
+    data: {
+      email: "hendra@example.com",
+      password: PASSWORD_HASH,
+      name: "Hendra Kurniawan",
+      bio: "Marketing manager yang fokus di growth & digital marketing. Suka diskusi strategi sambil ngopi.",
+      jobTitle: "Marketing Manager",
+      company: "Blibli",
+      location: "Jakarta Pusat",
+      profileComplete: true,
+      plan: "pro",
+    },
+  });
+
+  const farah = await prisma.user.create({
+    data: {
+      email: "farah@example.com",
+      password: PASSWORD_HASH,
+      name: "Farah Aulia",
+      bio: "UX researcher yang passionate soal human-centered design. Sering kerja dari cafe untuk dapat inspirasi.",
+      jobTitle: "UX Researcher",
+      company: "Tokopedia",
+      location: "Jakarta Selatan",
+      profileComplete: true,
+      plan: "pro",
+    },
+  });
+
+  const tina = await prisma.user.create({
+    data: {
+      email: "tina@example.com",
+      password: PASSWORD_HASH,
+      name: "Tina Rahayu",
+      bio: "Founder & CEO startup fintech. Suka membangun komunitas dan berbagi insight entrepreneurship.",
+      jobTitle: "Founder & CEO",
+      company: "PayFlow",
+      location: "Jakarta Selatan",
+      profileComplete: true,
+      plan: "team",
+    },
+  });
+
   // ──── Spaces ────
   console.log("Creating spaces...");
 
@@ -390,7 +432,7 @@ async function main() {
       category: "productivity",
       adminId: mega.id,
       spaceId: kopitiam.id,
-      schedule: "Setiap Senin & Kamis",
+      schedule: "Senin & Rabu",
       timeStart: "07:30",
       timeEnd: "10:00",
       maxMembers: 8,
@@ -398,6 +440,154 @@ async function main() {
       tags: ["Morning Routine", "Goal Setting", "Productivity", "Accountability"],
       color: "#0EA5E9",
       requireApproval: true,
+      isOpen: true,
+    },
+  });
+
+  const dataGroup = await prisma.group.create({
+    data: {
+      name: "Data Analytics Jakarta",
+      description:
+        "Komunitas data analyst, data scientist, dan BI developer di Jakarta. Sharing case study, tools terbaru (Python, SQL, Tableau), dan diskusi career path di bidang data.",
+      category: "tech",
+      adminId: farah.id,
+      spaceId: cospace.id,
+      schedule: "Setiap Kamis",
+      timeStart: "18:30",
+      timeEnd: "21:00",
+      maxMembers: 12,
+      vibe: "Fokus & Silent",
+      tags: ["Data", "Python", "SQL", "Analytics", "Machine Learning"],
+      color: "#14B8A6",
+      requireApproval: true,
+      chatLink: "https://t.me/datajakarta",
+      chatType: "telegram",
+      isOpen: true,
+    },
+  });
+
+  const remoteGroup = await prisma.group.create({
+    data: {
+      name: "Remote Work Warriors",
+      description:
+        "Komunitas remote worker yang pengen tetap produktif dan terhubung. Kita meetup rutin, sharing tips WFH, tools remote collaboration, dan saling support agar tidak merasa isolated.",
+      category: "productivity",
+      adminId: hendra.id,
+      spaceId: kopitiam.id,
+      schedule: "Setiap Selasa",
+      timeStart: "13:00",
+      timeEnd: "17:00",
+      maxMembers: 10,
+      vibe: "Produktif & Energik",
+      tags: ["Remote Work", "WFH", "Productivity", "Tools"],
+      color: "#6366F1",
+      requireApproval: false,
+      isOpen: true,
+    },
+  });
+
+  const marketingGroup = await prisma.group.create({
+    data: {
+      name: "Marketing Growth Hacks",
+      description:
+        "Forum diskusi growth marketing, performance ads, SEO, dan strategi digital. Sharing campaign case study, growth experiment, dan analisis kompetitor. Cocok untuk marketer yang mau terus belajar.",
+      category: "business",
+      adminId: hendra.id,
+      spaceId: maxy.id,
+      schedule: "Setiap Jumat",
+      timeStart: "15:00",
+      timeEnd: "18:00",
+      maxMembers: 15,
+      vibe: "Kreatif & Kolaboratif",
+      tags: ["Marketing", "Growth", "SEO", "Ads", "Digital Marketing"],
+      color: "#F43F5E",
+      requireApproval: true,
+      chatLink: "https://chat.whatsapp.com/marketinggrowth",
+      chatType: "whatsapp",
+      isOpen: true,
+    },
+  });
+
+  const uxGroup = await prisma.group.create({
+    data: {
+      name: "UX Research Circle",
+      description:
+        "Untuk UX researcher, product designer, dan siapa pun yang tertarik human-centered design. Kita bahas research methodology, user testing, dan share insight dari proyek masing-masing.",
+      category: "creative",
+      adminId: farah.id,
+      spaceId: conclave.id,
+      schedule: "Setiap Rabu",
+      timeStart: "16:00",
+      timeEnd: "18:30",
+      maxMembers: 8,
+      vibe: "Kreatif & Kolaboratif",
+      tags: ["UX", "Research", "Design Thinking", "Usability"],
+      color: "#A855F7",
+      requireApproval: true,
+      isOpen: true,
+    },
+  });
+
+  const freelancerGroup = await prisma.group.create({
+    data: {
+      name: "Freelancer Network Jakarta",
+      description:
+        "Komunitas freelancer dari berbagai bidang: developer, designer, writer, consultant. Sharing referral project, tips negosiasi rate, manajemen klien, dan networking untuk membuka peluang kolaborasi.",
+      category: "business",
+      adminId: tina.id,
+      spaceId: kopiSoe.id,
+      schedule: "Sabtu & Minggu",
+      timeStart: "11:00",
+      timeEnd: "14:00",
+      maxMembers: 20,
+      vibe: "Santai & Ngobrol",
+      tags: ["Freelance", "Networking", "Side Project", "Career"],
+      color: "#EAB308",
+      requireApproval: false,
+      isOpen: true,
+    },
+  });
+
+  const fintechGroup = await prisma.group.create({
+    data: {
+      name: "Fintech & Startup Circle",
+      description:
+        "Diskusi tren fintech, regulasi, dan inovasi produk keuangan digital. Cocok untuk founder, product manager, dan developer yang bekerja di ekosistem startup fintech Indonesia.",
+      category: "business",
+      adminId: tina.id,
+      spaceId: cospace.id,
+      schedule: "Setiap Kamis",
+      timeStart: "17:00",
+      timeEnd: "19:30",
+      maxMembers: 15,
+      vibe: "Produktif & Energik",
+      tags: ["Fintech", "Startup", "Product", "Finance"],
+      color: "#0891B2",
+      requireApproval: true,
+      chatLink: "https://t.me/fintechstartupcircle",
+      chatType: "telegram",
+      isOpen: true,
+    },
+  });
+
+  const osGroup = await prisma.group.create({
+    data: {
+      name: "Open Source Contributors",
+      description:
+        "Buat kamu yang suka atau ingin mulai berkontribusi ke open source. Kita pair programming bareng, code review PR, dan sharing pengalaman contribute ke project GitHub.",
+      category: "tech",
+      adminId: tina.id,
+      spaceId: dago.id,
+      schedule: "Setiap Minggu",
+      timeStart: "14:00",
+      timeEnd: "18:00",
+      maxMembers: 10,
+      vibe: "Fokus & Silent",
+      tags: ["Open Source", "GitHub", "Coding", "Contribution"],
+      color: "#22C55E",
+      requireApproval: false,
+      chatLink: "https://discord.gg/opensourcejakarta",
+      chatType: "discord",
       isOpen: true,
     },
   });
@@ -439,6 +629,41 @@ async function main() {
 
       { userId: andi.id, groupId: contentGroup.id, role: "member" },
       { userId: rizki.id, groupId: morningGroup.id, role: "member" },
+
+      // New group admins
+      { userId: farah.id, groupId: dataGroup.id, role: "admin" },
+      { userId: hendra.id, groupId: remoteGroup.id, role: "admin" },
+      { userId: hendra.id, groupId: marketingGroup.id, role: "admin" },
+      { userId: farah.id, groupId: uxGroup.id, role: "admin" },
+      { userId: tina.id, groupId: freelancerGroup.id, role: "admin" },
+      { userId: tina.id, groupId: fintechGroup.id, role: "admin" },
+      { userId: tina.id, groupId: osGroup.id, role: "admin" },
+
+      // New group members
+      { userId: rizki.id, groupId: dataGroup.id, role: "member" },
+      { userId: dika.id, groupId: dataGroup.id, role: "member" },
+      { userId: sari.id, groupId: dataGroup.id, role: "member" },
+
+      { userId: andi.id, groupId: remoteGroup.id, role: "member" },
+      { userId: dika.id, groupId: remoteGroup.id, role: "member" },
+      { userId: rizki.id, groupId: remoteGroup.id, role: "member" },
+
+      { userId: mega.id, groupId: marketingGroup.id, role: "member" },
+      { userId: rina.id, groupId: marketingGroup.id, role: "member" },
+
+      { userId: andi.id, groupId: uxGroup.id, role: "member" },
+      { userId: sari.id, groupId: uxGroup.id, role: "member" },
+
+      { userId: andi.id, groupId: freelancerGroup.id, role: "member" },
+      { userId: dika.id, groupId: freelancerGroup.id, role: "member" },
+      { userId: rizki.id, groupId: freelancerGroup.id, role: "member" },
+
+      { userId: dika.id, groupId: osGroup.id, role: "member" },
+      { userId: sari.id, groupId: osGroup.id, role: "member" },
+
+      { userId: budi.id, groupId: fintechGroup.id, role: "member" },
+      { userId: hendra.id, groupId: fintechGroup.id, role: "member" },
+      { userId: andi.id, groupId: fintechGroup.id, role: "member" },
     ],
   });
 
@@ -486,6 +711,32 @@ async function main() {
         rejectionReason: "Saat ini grup sedang penuh. Silakan coba lagi bulan depan ya!",
         reviewedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
       },
+      // Requests for new groups
+      {
+        groupId: dataGroup.id,
+        userId: hendra.id,
+        status: "pending",
+        message: "Saya marketing manager yang ingin belajar data analytics untuk improve campaign analysis.",
+      },
+      {
+        groupId: marketingGroup.id,
+        userId: andi.id,
+        status: "pending",
+        message: "Saya designer yang ingin belajar marketing untuk jadi product designer yang lebih baik.",
+      },
+      {
+        groupId: uxGroup.id,
+        userId: rizki.id,
+        status: "pending",
+        message: "Data scientist yang ingin belajar UX untuk bisa bikin data product yang lebih user-friendly.",
+      },
+      {
+        groupId: marketingGroup.id,
+        userId: dika.id,
+        status: "approved",
+        message: "Freelance developer yang mau ngerti marketing supaya bisa bantu klien lebih baik.",
+        reviewedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      },
     ],
   });
 
@@ -525,6 +776,27 @@ async function main() {
         currentPeriodStart: now,
         currentPeriodEnd: thirtyDaysLater,
       },
+      {
+        userId: hendra.id,
+        plan: "pro",
+        status: "active",
+        currentPeriodStart: now,
+        currentPeriodEnd: thirtyDaysLater,
+      },
+      {
+        userId: farah.id,
+        plan: "pro",
+        status: "active",
+        currentPeriodStart: now,
+        currentPeriodEnd: thirtyDaysLater,
+      },
+      {
+        userId: tina.id,
+        plan: "team",
+        status: "active",
+        currentPeriodStart: now,
+        currentPeriodEnd: thirtyDaysLater,
+      },
     ],
   });
 
@@ -535,8 +807,11 @@ async function main() {
   console.log("  budi@example.com  → PRO   (admin: Startup Founders + Ngopi)");
   console.log("  rina@example.com  → TEAM  (admin: Design Jam + Bandung Tech)");
   console.log("  mega@example.com  → PRO   (admin: Content Creators + Morning)");
-  console.log("  dika@example.com  → FREE  (member)");
-  console.log("  rizki@example.com → FREE  (member)");
+  console.log("  dika@example.com   → FREE  (member)");
+  console.log("  rizki@example.com  → FREE  (member)");
+  console.log("  hendra@example.com → PRO   (admin: Remote Work + Marketing Growth)");
+  console.log("  farah@example.com  → PRO   (admin: Data Analytics + UX Research)");
+  console.log("  tina@example.com   → TEAM  (admin: Freelancer Network + Open Source)");
 }
 
 main()

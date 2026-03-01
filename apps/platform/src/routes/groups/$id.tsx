@@ -125,7 +125,7 @@ export function GroupDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-100">
+      <div className="flex border-b border-gray-100 overflow-x-auto scrollbar-none">
         {tabs.map((t) => (
           <button
             key={t}

@@ -30,3 +30,10 @@ a {
 button {
   font-family: inherit;
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

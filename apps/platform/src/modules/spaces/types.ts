@@ -3,8 +3,8 @@ export interface Space {
   name: string;
   area: string;
   address: string | null;
-  wifi_speed: "slow" | "medium" | "fast";
-  noise_level: "quiet" | "medium" | "loud";
+  wifi_speed: "slow" | "medium" | "fast" | "very_fast";
+  noise_level: "quiet" | "medium" | "buzzy" | "loud";
   has_power: boolean;
   price_range: string | null;
   rating: number;

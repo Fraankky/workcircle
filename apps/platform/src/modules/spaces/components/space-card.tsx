@@ -4,11 +4,13 @@ const WIFI_LABEL: Record<Space["wifi_speed"], string> = {
   slow: "WiFi Lambat",
   medium: "WiFi OK",
   fast: "WiFi Kencang",
+  very_fast: "WiFi Super Cepat",
 };
 
 const NOISE_LABEL: Record<Space["noise_level"], string> = {
   quiet: "Tenang",
   medium: "Sedang",
+  buzzy: "Agak Ramai",
   loud: "Ramai",
 };
 
@@ -16,11 +18,13 @@ const WIFI_COLOR: Record<Space["wifi_speed"], string> = {
   slow: "bg-red-50 text-red-500",
   medium: "bg-yellow-50 text-yellow-600",
   fast: "bg-green-50 text-green-600",
+  very_fast: "bg-green-50 text-green-700",
 };
 
 const NOISE_COLOR: Record<Space["noise_level"], string> = {
   quiet: "bg-green-50 text-green-600",
   medium: "bg-yellow-50 text-yellow-600",
+  buzzy: "bg-orange-50 text-orange-500",
   loud: "bg-red-50 text-red-500",
 };
 
