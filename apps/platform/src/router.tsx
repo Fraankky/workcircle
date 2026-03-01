@@ -4,6 +4,7 @@ import { LoginPage } from "./routes/login";
 import { RegisterPage } from "./routes/register";
 import { DiscoverPage } from "./routes/discover/index";
 import { GroupDetailPage } from "./routes/groups/$id";
+import { GroupNewPage } from "./routes/groups/new";
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({ component: RootLayout });
@@ -41,15 +42,10 @@ const groupDetailRoute = createRoute({
   component: GroupDetailPage,
 });
 
-// Phase 8 — replaced when implemented
 const groupNewRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/groups/new",
-  component: () => (
-    <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
-      Create Group — Phase 8
-    </div>
-  ),
+  component: GroupNewPage,
 });
 
 // Phase 10 — replaced when implemented

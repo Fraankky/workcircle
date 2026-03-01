@@ -208,7 +208,7 @@ function ActionButton({
     return (
       <button
         onClick={onLeave}
-        className="flex-shrink-0 text-xs font-medium border border-gray-200 text-gray-500 px-3 py-2 rounded-lg hover:bg-gray-50 hover:text-red-500 transition-colors"
+        className="shrink-0 text-xs font-medium border border-gray-200 text-gray-500 px-3 py-2 rounded-lg hover:bg-gray-50 hover:text-red-500 transition-colors"
       >
         Keluar
       </button>
@@ -217,7 +217,7 @@ function ActionButton({
 
   if (myRequest?.status === "pending") {
     return (
-      <span className="flex-shrink-0 text-xs font-medium bg-gray-100 text-gray-400 px-3 py-2 rounded-lg">
+      <span className="shrink-0 text-xs font-medium bg-gray-100 text-gray-400 px-3 py-2 rounded-lg">
         Menunggu
       </span>
     );
@@ -225,14 +225,14 @@ function ActionButton({
 
   if (!isOpen) {
     return (
-      <span className="flex-shrink-0 text-xs text-gray-400 px-3 py-2">Penuh</span>
+      <span className="shrink-0 text-xs text-gray-400 px-3 py-2">Penuh</span>
     );
   }
 
   return (
     <button
       onClick={onJoin}
-      className="flex-shrink-0 text-xs font-medium bg-indigo-500 text-white px-3 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
+      className="shrink-0 text-xs font-medium bg-indigo-500 text-white px-3 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
     >
       Bergabung
     </button>
