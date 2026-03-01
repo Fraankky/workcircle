@@ -58,14 +58,14 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
       category,
       vibe: vibe || undefined,
       tags,
-      space_id: spaceId || undefined,
+      spaceId: spaceId || undefined,
       schedule,
-      time_start: timeStart,
-      time_end: timeEnd,
-      max_members: maxMembers,
-      chat_link: chatLink || undefined,
-      chat_type: chatType || undefined,
-      require_approval: requireApproval,
+      timeStart,
+      timeEnd,
+      maxMembers,
+      chatLink: chatLink || undefined,
+      chatType: chatType || undefined,
+      requireApproval,
     }).catch(() => null);
     if (group) onSuccess(group.id);
   }

@@ -8,14 +8,14 @@ interface CreateGroupData {
   category: string;
   vibe?: string;
   tags?: string[];
-  space_id?: string;
+  spaceId?: string;
   schedule: string;
-  time_start: string;
-  time_end: string;
-  max_members: number;
-  chat_link?: string;
-  chat_type?: string;
-  require_approval?: boolean;
+  timeStart: string;
+  timeEnd: string;
+  maxMembers: number;
+  chatLink?: string;
+  chatType?: string;
+  requireApproval?: boolean;
 }
 
 export function useCreateGroup() {

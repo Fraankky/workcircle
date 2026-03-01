@@ -1,3 +1,5 @@
+import { config } from "dotenv";
+config({ path: "../../.env" });
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { corsMiddleware } from "./middleware/cors.js";
