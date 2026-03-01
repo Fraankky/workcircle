@@ -5,6 +5,7 @@ import { RegisterPage } from "./routes/register";
 import { DiscoverPage } from "./routes/discover/index";
 import { GroupDetailPage } from "./routes/groups/$id";
 import { GroupNewPage } from "./routes/groups/new";
+import { SpacesPage } from "./routes/spaces/index";
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({ component: RootLayout });
@@ -59,15 +60,10 @@ const groupsRoute = createRoute({
   ),
 });
 
-// Phase 9 — replaced when implemented
 const spacesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/spaces",
-  component: () => (
-    <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
-      Spaces — Phase 9
-    </div>
-  ),
+  component: SpacesPage,
 });
 
 const profileRoute = createRoute({
