@@ -52,11 +52,10 @@ export function Sidebar() {
   if (!user) return null;
 
   return (
-    <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 border-r border-[#30363D] bg-[#0D1117]">
+    <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 border-r border-border bg-surface">
       {/* Logo */}
-      <div className="px-5 py-4 border-b border-[#30363D]">
-        <span className="text-sm font-bold text-[#58A6FF] tracking-tight">WorkCircle</span>
-        <span className="text-[#6E7681] text-xs ml-1">v1</span>
+      <div className="px-6 py-8 border-b border-border">
+        <span className="text-xl font-bold text-accent tracking-tight">WorkCircle.</span>
       </div>
 
       {/* Nav */}
@@ -70,8 +69,8 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors",
                 active
-                  ? "bg-[#21262D] text-[#58A6FF]"
-                  : "text-[#6E7681] hover:bg-[#21262D] hover:text-[#C9D1D9]",
+                  ? "bg-[#21262D] text-accent"
+                  : "text-muted hover:bg-[#21262D] hover:text-fg",
               )}
             >
               {item.icon}
@@ -82,7 +81,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom: upgrade + user */}
-      <div className="px-3 pb-4 space-y-3 border-t border-[#30363D] pt-3">
+      <div className="px-3 pb-4 space-y-3 border-t border-border pt-3">
         {user.plan === "free" && (
           <Link to="/upgrade">
             <Button size="sm" className="w-full justify-start gap-2">
@@ -97,12 +96,12 @@ export function Sidebar() {
         <div className="flex items-center gap-2.5 px-1">
           <Avatar src={user.avatarUrl} name={user.name} size="sm" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-[#C9D1D9] truncate">{user.name}</p>
-            <p className="text-[10px] text-[#6E7681] uppercase font-medium tracking-wide">{user.plan}</p>
+            <p className="text-xs font-semibold text-fg truncate">{user.name}</p>
+            <p className="text-[10px] text-muted uppercase font-medium tracking-wide">{user.plan}</p>
           </div>
           <button
             onClick={logout}
-            className="text-[#6E7681] hover:text-[#C9D1D9] transition-colors"
+            className="text-muted hover:text-fg transition-colors"
             title="Logout"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

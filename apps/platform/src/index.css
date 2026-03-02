@@ -47,7 +47,7 @@ body,
 
 /* Dot-grid texture on main background */
 body {
-  background-image: radial-gradient(rgba(48, 54, 61, 0.55) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(22, 30, 39, 0.55) 1px, transparent 1px);
   background-size: 24px 24px;
   background-attachment: fixed;
 }

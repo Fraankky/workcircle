@@ -12,7 +12,7 @@ export function GroupNewPage() {
 
   if (user?.plan === "free") {
     return (
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto p-6">
         <div className="bg-surface rounded border border-border p-8 text-center space-y-4">
           <div className="w-12 h-12 bg-accent-dim rounded flex items-center justify-center mx-auto">
             <svg
@@ -55,7 +55,7 @@ export function GroupNewPage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto space-y-5">
+    <div className="max-w-xl mx-auto space-y-5 p-6">
       <div>
         <Link
           to="/discover"
