@@ -34,7 +34,7 @@ export function GroupsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-fg">Grup Saya</h1>
@@ -80,7 +80,7 @@ function GroupSection({
   emptyCta: { label: string; to: string };
 }) {
   return (
-    <section className="space-y-3 p-6">
+    <section className="space-y-3">
       <div className="flex items-center gap-2">
         <h2 className="text-sm font-semibold text-muted">{title}</h2>
         {badge}

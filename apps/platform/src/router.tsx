@@ -8,6 +8,7 @@ import { GroupNewPage } from "./routes/groups/new";
 import { SpacesPage } from "./routes/spaces/index";
 import { GroupsPage } from "./routes/groups/index";
 import { UpgradePage } from "./routes/upgrade/index";
+import { ProfilePage } from "./routes/profile/index";
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({ component: RootLayout });
@@ -66,11 +67,7 @@ const spacesRoute = createRoute({
 const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/profile",
-  component: () => (
-    <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
-      Profile — coming soon
-    </div>
-  ),
+  component: ProfilePage,
 });
 
 const upgradeRoute = createRoute({

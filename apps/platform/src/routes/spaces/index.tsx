@@ -16,17 +16,17 @@ export function SpacesPage() {
   );
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 p-6">
       {/* Header */}
       <div>
-        <h1 className="text-lg font-bold text-[#C9D1D9]">Spaces</h1>
-        <p className="text-xs text-[#6E7681] mt-0.5">
+        <h1 className="text-lg font-bold text-fg">Spaces</h1>
+        <p className="text-xs text-muted mt-0.5">
           Temukan tempat kerja bareng yang pas
         </p>
       </div>
 
       {/* Interactive map */}
-      <div className="h-64 rounded overflow-hidden border border-[#30363D]">
+      <div className="h-64 rounded overflow-hidden border border-border">
         <SpaceMap
           spaces={allSpaces}
           selectedSpaceId={selectedSpaceId}
@@ -39,7 +39,7 @@ export function SpacesPage() {
         <select
           value={area}
           onChange={(e) => setArea(e.target.value)}
-          className="text-xs border border-[#30363D] rounded px-3 py-2 text-[#8B949E] bg-[#1C2128] focus:border-[#58A6FF] focus:outline-none"
+          className="text-xs border border-border rounded px-3 py-2 text-muted bg-surface focus:border-ascent focus:outline-none"
         >
           <option value="">Semua Area</option>
           {areas.map((a) => (
@@ -48,7 +48,7 @@ export function SpacesPage() {
         </select>
 
         {!isLoading && !error && (
-          <p className="text-xs text-[#6E7681]">{spaces.length} space ditemukan</p>
+          <p className="text-xs text-muted">{spaces.length} space ditemukan</p>
         )}
       </div>
 
