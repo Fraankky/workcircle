@@ -19,10 +19,10 @@ export function CategoryFilter({ selected, onChange }: CategoryFilterProps) {
             key={cat}
             onClick={() => onChange(cat)}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-100",
+              "px-3 py-1.5 rounded text-xs font-medium transition-all duration-100",
               active
-                ? "bg-indigo-500 text-white"
-                : "bg-white border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                ? "bg-[#58A6FF] text-[#0D1117]"
+                : "bg-[#21262D] border border-[#30363D] text-[#6E7681] hover:border-[#484F58] hover:text-[#C9D1D9]",
             )}
           >
             {label}

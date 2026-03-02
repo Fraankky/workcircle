@@ -48,16 +48,16 @@ export function LoginForm() {
       />
 
       {error && (
-        <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+        <p className="text-sm text-[#F85149] bg-[#3D1A1A] border border-[#F85149]/20 px-3 py-2 rounded">{error}</p>
       )}
 
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Masuk..." : "Masuk"}
       </Button>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-[#6E7681]">
         Belum punya akun?{" "}
-        <Link to="/register" className="text-indigo-600 font-medium hover:underline">
+        <Link to="/register" className="text-[#58A6FF] font-medium hover:underline">
           Daftar
         </Link>
       </p>

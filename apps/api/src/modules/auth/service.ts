@@ -5,7 +5,7 @@ import {
   NotFoundError,
 } from "../../exceptions.js";
 
-const USER_SELECT = {
+export const USER_SELECT = {
   id: true,
   email: true,
   name: true,

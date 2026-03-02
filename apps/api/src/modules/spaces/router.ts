@@ -17,6 +17,8 @@ export const spacesRouter = new Hono<Context>()
         name: s.name,
         area: s.area,
         address: s.address,
+        latitude: s.latitude,
+        longitude: s.longitude,
         wifi_speed: s.wifiSpeed,
         noise_level: s.noiseLevel,
         has_power: s.hasPower,

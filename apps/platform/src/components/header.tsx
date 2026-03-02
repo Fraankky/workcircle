@@ -8,14 +8,13 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-white border-b border-gray-100 flex items-center justify-between px-4">
-      <span className="text-sm font-bold text-gray-900 tracking-tight">WorkCircle</span>
-
+    <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-bg border-b border-border flex items-center justify-between px-4">
+      <span className="text-sm font-bold text-acccent tracking-tight">WorkCircle</span>
       <div className="flex items-center gap-2">
         {user && <Avatar src={user.avatarUrl} name={user.name} size="xs" />}
         <button
           onClick={() => setMenuOpen((v) => !v)}
-          className="p-1.5 text-gray-500 hover:text-gray-900 transition-colors"
+          className="p-1.5 text-faint hover:text-fg transition-colors"
         >
           {menuOpen ? (
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -30,7 +29,7 @@ export function Header() {
       </div>
 
       {menuOpen && (
-        <div className="absolute top-14 left-0 right-0 bg-white border-b border-gray-100 shadow-sm py-2">
+        <div className="absolute top-14 left-0 right-0 bg-surface border-b border-border py-2">
           {[
             { to: "/discover", label: "Discover" },
             { to: "/groups", label: "My Groups" },
@@ -41,7 +40,7 @@ export function Header() {
               key={item.to}
               to={item.to}
               onClick={() => setMenuOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
+              className="block px-4 py-2.5 text-sm text-muted hover:bg-[#21262D] hover:text-fg transition-colors"
             >
               {item.label}
             </Link>

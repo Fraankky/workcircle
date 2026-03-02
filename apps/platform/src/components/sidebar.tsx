@@ -52,14 +52,15 @@ export function Sidebar() {
   if (!user) return null;
 
   return (
-    <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 border-r border-gray-100 bg-white">
+    <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 border-r border-[#30363D] bg-[#0D1117]">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-gray-100">
-        <span className="text-sm font-bold text-gray-900 tracking-tight">WorkCircle</span>
+      <div className="px-5 py-4 border-b border-[#30363D]">
+        <span className="text-sm font-bold text-[#58A6FF] tracking-tight">WorkCircle</span>
+        <span className="text-[#6E7681] text-xs ml-1">v1</span>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
         {NAV.map((item) => {
           const active = location.pathname.startsWith(item.to);
           return (
@@ -67,10 +68,10 @@ export function Sidebar() {
               key={item.to}
               to={item.to}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
+                "flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors",
                 active
-                  ? "bg-indigo-50 text-indigo-600 font-medium"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900",
+                  ? "bg-[#21262D] text-[#58A6FF]"
+                  : "text-[#6E7681] hover:bg-[#21262D] hover:text-[#C9D1D9]",
               )}
             >
               {item.icon}
@@ -81,11 +82,11 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom: upgrade + user */}
-      <div className="px-3 pb-4 space-y-3 border-t border-gray-100 pt-3">
+      <div className="px-3 pb-4 space-y-3 border-t border-[#30363D] pt-3">
         {user.plan === "free" && (
           <Link to="/upgrade">
             <Button size="sm" className="w-full justify-start gap-2">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
               Upgrade ke PRO
@@ -96,12 +97,12 @@ export function Sidebar() {
         <div className="flex items-center gap-2.5 px-1">
           <Avatar src={user.avatarUrl} name={user.name} size="sm" />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-gray-900 truncate">{user.name}</p>
-            <p className="text-[10px] text-gray-400 uppercase font-medium">{user.plan}</p>
+            <p className="text-xs font-semibold text-[#C9D1D9] truncate">{user.name}</p>
+            <p className="text-[10px] text-[#6E7681] uppercase font-medium tracking-wide">{user.plan}</p>
           </div>
           <button
             onClick={logout}
-            className="text-gray-300 hover:text-gray-500 transition-colors"
+            className="text-[#6E7681] hover:text-[#C9D1D9] transition-colors"
             title="Logout"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

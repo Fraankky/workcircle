@@ -27,7 +27,7 @@ export function Avatar({ src, name, size = "md", className }: AvatarProps) {
   return (
     <div
       className={cn(
-        "rounded-full bg-indigo-100 text-indigo-600 font-semibold flex items-center justify-center flex-shrink-0",
+        "rounded-full bg-[#1F3558] text-[#58A6FF] font-semibold flex items-center justify-center flex-shrink-0",
         sizes[size],
         className,
       )}
@@ -49,12 +49,12 @@ export function AvatarGroup({ users, max = 3 }: AvatarGroupProps) {
   return (
     <div className="flex">
       {visible.map((u, i) => (
-        <div key={i} className="-ml-2 first:ml-0 ring-2 ring-white rounded-full">
+        <div key={i} className="-ml-2 first:ml-0 ring-2 ring-[#161B22] rounded-full">
           <Avatar src={u.avatarUrl} name={u.name} size="xs" />
         </div>
       ))}
       {rest > 0 && (
-        <div className="-ml-2 w-6 h-6 rounded-full bg-gray-100 ring-2 ring-white text-[10px] font-semibold text-gray-500 flex items-center justify-center">
+        <div className="-ml-2 w-6 h-6 rounded-full bg-[#21262D] ring-2 ring-[#161B22] text-[10px] font-semibold text-[#8B949E] flex items-center justify-center">
           +{rest}
         </div>
       )}

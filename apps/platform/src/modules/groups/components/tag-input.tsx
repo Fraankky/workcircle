@@ -28,17 +28,17 @@ export function TagInput({ tags, onChange, max = 5 }: TagInputProps) {
   }
 
   return (
-    <div className="flex flex-wrap gap-1.5 p-2 border border-gray-200 rounded-lg min-h-[40px] focus-within:border-indigo-500 transition-colors">
+    <div className="flex flex-wrap gap-1.5 p-2 border border-[#30363D] bg-[#1C2128] rounded min-h-[40px] focus-within:border-[#58A6FF] transition-colors">
       {tags.map((tag) => (
         <span
           key={tag}
-          className="flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded-md"
+          className="flex items-center gap-1 px-2 py-0.5 bg-[#1F3558] text-[#58A6FF] border border-[#58A6FF]/30 text-xs rounded"
         >
           #{tag}
           <button
             type="button"
             onClick={() => onChange(tags.filter((t) => t !== tag))}
-            className="hover:text-indigo-800 leading-none"
+            className="hover:text-white leading-none"
           >
             ×
           </button>
@@ -52,7 +52,7 @@ export function TagInput({ tags, onChange, max = 5 }: TagInputProps) {
           onKeyDown={handleKeyDown}
           onBlur={addTag}
           placeholder={tags.length === 0 ? "Ketik lalu tekan Enter..." : ""}
-          className="flex-1 min-w-[100px] text-xs outline-none bg-transparent placeholder-gray-400"
+          className="flex-1 min-w-[100px] text-xs outline-none bg-transparent text-[#C9D1D9] placeholder-[#6E7681]"
         />
       )}
     </div>

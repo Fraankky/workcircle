@@ -26,27 +26,27 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      <div className="absolute inset-0 bg-black/25" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div
         className={cn(
-          "relative z-10 w-full max-w-md rounded-t-2xl sm:rounded-2xl bg-white shadow-xl max-h-[90vh] overflow-y-auto",
+          "relative z-10 w-full max-w-md rounded-t sm:rounded border border-[#30363D] bg-[#161B22] max-h-[90vh] overflow-y-auto",
           className,
         )}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
-            <h2 className="text-base font-semibold text-gray-900">{title}</h2>
+          <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#30363D]">
+            <h2 className="text-sm font-semibold text-[#C9D1D9]">{title}</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors p-1 -mr-1"
+              className="text-[#6E7681] hover:text-[#C9D1D9] hover:bg-[#21262D] transition-colors p-1 rounded -mr-1"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className="p-5">{children}</div>
       </div>
     </div>
   );

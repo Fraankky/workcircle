@@ -1,8 +1,31 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* ── Industrial dark palette ── */
+  --color-bg:          #0D1117;
+  --color-surface:     #161B22;
+  --color-surface-2:   #1C2128;
+  --color-overlay:     #21262D;
+  --color-border:      #30363D;
+  --color-border-dim:  #21262D;
+
+  --color-fg:          #C9D1D9;
+  --color-muted:       #8B949E;
+  --color-faint:       #6E7681;
+
+  --color-accent:      #58A6FF;
+  --color-accent-dim:  #1F3558;
+  --color-accent-glow: #388BFD;
+
+  --color-success:     #3FB950;
+  --color-success-dim: #1A3A21;
+  --color-warning:     #D29922;
+  --color-warning-dim: #3A2D10;
+  --color-danger:      #F85149;
+  --color-danger-dim:  #3D1A1A;
 }
 
 * {
@@ -15,11 +38,18 @@ body,
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: #0D1117;
+  color: #C9D1D9;
+}
+
+/* Dot-grid texture on main background */
+body {
+  background-image: radial-gradient(rgba(48, 54, 61, 0.55) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
 }
 
 a {
@@ -31,9 +61,154 @@ button {
   font-family: inherit;
 }
 
+/* ── Global form element dark theme ─────────────────────────────── */
+input,
+textarea {
+  font-family: inherit;
+  background-color: #1C2128;
+  color: #C9D1D9;
+  border-color: #30363D;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6E7681;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  filter: invert(1);
+}
+
+select {
+  font-family: inherit;
+  background-color: #1C2128;
+  color: #C9D1D9;
+  border-color: #30363D;
+}
+
+select option {
+  background-color: #161B22;
+  color: #C9D1D9;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
 .scrollbar-none {
   scrollbar-width: none;
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0D1117;
+}
+::-webkit-scrollbar-thumb {
+  background: #30363D;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #484F58;
+}
+
+/* ── Leaflet + shadcn-map overrides (dark theme) ─────────────────── */
+
+.leaflet-container {
+  font-family: inherit;
+  border-radius: 0.75rem;
+  background-color: #0D1117 !important;
+}
+
+.leaflet-container a {
+  color: inherit;
+}
+
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-content,
+.leaflet-popup-content p {
+  all: unset;
+}
+
+.leaflet-popup {
+  animation: none !important;
+}
+
+.leaflet-popup-close-button {
+  top: 8px !important;
+  right: 8px !important;
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+  color: #6E7681 !important;
+  background: #21262D !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-close-button:hover {
+  background: #30363D !important;
+  color: #C9D1D9 !important;
+}
+
+.leaflet-tooltip {
+  background: #21262D !important;
+  color: #C9D1D9 !important;
+  border: 1px solid #30363D !important;
+  border-radius: 4px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  box-shadow: none !important;
+  animation: none !important;
+  font-family: inherit !important;
+}
+
+.leaflet-tooltip-top::before,
+.leaflet-tooltip-bottom::before,
+.leaflet-tooltip-left::before,
+.leaflet-tooltip-right::before {
+  display: none !important;
+}
+
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+.leaflet-control-zoom {
+  display: none !important;
+}
+
+/* Cluster markers — accent blue */
+.marker-cluster div {
+  font-family: inherit;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background-color: rgba(88, 166, 255, 0.15) !important;
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+  background-color: rgba(88, 166, 255, 0.7) !important;
+  color: #0D1117 !important;
+  font-weight: 700 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Leaflet tile pane bg for dark */
+.leaflet-tile-pane {
+  filter: brightness(0.9);
 }

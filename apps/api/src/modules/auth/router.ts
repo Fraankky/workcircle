@@ -10,11 +10,13 @@ import {
   loginSchema,
   updateProfileSchema,
 } from "./schema.js";
+import { prisma } from "../../utils/prisma.js";
 import {
   registerUser,
   loginUser,
   getUserById,
   updateProfile,
+  USER_SELECT,
 } from "./service.js";
 
 export const authRouter = new Hono<Context>();
@@ -81,7 +83,15 @@ authRouter.post("/logout", (c) => {
 
 authRouter.get("/me", requireAuth, async (c) => {
   const userPayload = c.get("user")!;
-  const user = await getUserById(userPayload.id);
+  const user = await prisma.user.findUnique({
+    where: { id: userPayload.id },
+    select: USER_SELECT,
+  });
+  // Token valid but user deleted (e.g. after re-seed) — clear stale cookie
+  if (!user) {
+    deleteCookie(c, "auth_token", { path: "/" });
+    throw new UnauthorizedError("Session expired");
+  }
   return c.json({ data: user });
 });
 

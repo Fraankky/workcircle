@@ -11,7 +11,7 @@ export function GroupsPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="h-6 w-32 bg-gray-100 animate-pulse rounded" />
+        <div className="h-6 w-32 bg-[#21262D] animate-pulse rounded" />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => <GroupCardSkeleton key={i} />)}
         </div>
@@ -22,10 +22,10 @@ export function GroupsPage() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <p className="text-sm text-gray-400">{error}</p>
+        <p className="text-sm text-faint">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-3 text-xs text-indigo-500 hover:underline"
+          className="mt-3 text-xs text-accent hover:underline"
         >
           Coba lagi
         </button>
@@ -37,12 +37,12 @@ export function GroupsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-gray-900">Grup Saya</h1>
-          <p className="text-xs text-gray-400 mt-0.5">Grup yang kamu admin dan ikuti</p>
+          <h1 className="text-lg font-bold text-fg">Grup Saya</h1>
+          <p className="text-xs text-muted mt-0.5">Grup yang kamu admin dan ikuti</p>
         </div>
         <Link
           to="/discover"
-          className="text-xs text-indigo-500 hover:underline"
+          className="text-xs text-accent hover:underline"
         >
           Jelajahi grup
         </Link>
@@ -80,19 +80,19 @@ function GroupSection({
   emptyCta: { label: string; to: string };
 }) {
   return (
-    <section className="space-y-3">
+    <section className="space-y-3 p-6">
       <div className="flex items-center gap-2">
-        <h2 className="text-sm font-semibold text-gray-700">{title}</h2>
+        <h2 className="text-sm font-semibold text-muted">{title}</h2>
         {badge}
-        <span className="text-xs text-gray-400 ml-auto">{groups.length} grup</span>
+        <span className="text-xs text-faint ml-auto">{groups.length} grup</span>
       </div>
 
       {groups.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-10 text-center border border-dashed border-gray-200 rounded-xl">
-          <p className="text-sm text-gray-400">{emptyText}</p>
+        <div className="flex flex-col items-center justify-center py-10 text-center border border-dashed border-border rounded">
+          <p className="text-sm text-faint">{emptyText}</p>
           <Link
             to={emptyCta.to}
-            className="mt-2 text-xs text-indigo-500 font-medium hover:underline"
+            className="mt-2 text-xs text-accent font-medium hover:underline"
           >
             {emptyCta.label}
           </Link>

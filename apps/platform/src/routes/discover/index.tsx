@@ -29,17 +29,17 @@ export function DiscoverPage() {
   });
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 p-6">
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold text-gray-900">Discover</h1>
-          <p className="text-xs text-gray-400 mt-0.5">Temukan komunitas kerja barengmu</p>
+          <h1 className="text-lg font-bold text-fg">Discover</h1>
+          <p className="text-xs text-muted mt-0.5">Temukan komunitas kerja barengmu</p>
         </div>
         {user?.plan !== "free" && (
           <Link
             to="/groups/new"
-            className="inline-flex items-center gap-1.5 bg-indigo-500 text-white text-xs font-medium px-3 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
+            className="inline-flex items-center gap-1.5 bg-ascent text-bg text-xs font-medium px-3 py-2 rounded hover:bg-accent-glow transition-colors"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -53,7 +53,7 @@ export function DiscoverPage() {
       <div className="flex gap-2">
         <div className="relative flex-1">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-faint"
             width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
           >
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -64,13 +64,13 @@ export function DiscoverPage() {
             placeholder="Cari grup..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-200 bg-white placeholder-gray-400 focus:border-indigo-500 focus:outline-none transition-colors"
+            className="w-full pl-9 pr-3 py-2 text-sm rounded border border-border bg-surface text-fg placeholder-muted focus:border-ascent focus:outline-none transition-colors"
           />
         </div>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as "recent" | "popular")}
-          className="text-xs border border-gray-200 rounded-lg px-2 py-2 text-gray-600 bg-white focus:border-indigo-500 focus:outline-none"
+          className="text-xs border border-border rounded px-2 py-2 text-muted bg-surface focus:border-ascent focus:outline-none"
         >
           <option value="recent">Terbaru</option>
           <option value="popular">Terpopuler</option>
@@ -82,7 +82,7 @@ export function DiscoverPage() {
 
       {/* Result count */}
       {!isLoading && !error && (
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-faint">
           {groups.length} grup ditemukan
         </p>
       )}

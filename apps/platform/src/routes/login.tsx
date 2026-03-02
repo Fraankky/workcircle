@@ -12,13 +12,13 @@ export function LoginPage() {
   }, [isAuthenticated, isLoading, navigate]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-xl font-bold text-gray-900">WorkCircle</h1>
-          <p className="text-sm text-gray-500 mt-1">Masuk ke akunmu</p>
+          <h1 className="text-xl font-bold text-[#58A6FF] tracking-tight">WorkCircle</h1>
+          <p className="text-xs text-[#6E7681] mt-1 uppercase tracking-widest">Masuk ke akunmu</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div className="bg-[#161B22] rounded border border-[#30363D] p-6">
           <LoginForm />
         </div>
       </div>

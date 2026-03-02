@@ -22,10 +22,10 @@ export function SpaceList({ spaces, isLoading, error }: SpaceListProps) {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm text-gray-400">{error}</p>
+        <p className="text-sm text-[#6E7681]">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-3 text-xs text-indigo-500 hover:underline"
+          className="mt-3 text-xs text-[#58A6FF] hover:underline"
         >
           Coba lagi
         </button>
@@ -36,9 +36,8 @@ export function SpaceList({ spaces, isLoading, error }: SpaceListProps) {
   if (spaces.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="text-4xl mb-3 opacity-40">🏢</div>
-        <p className="text-sm font-medium text-gray-500">Tidak ada space ditemukan</p>
-        <p className="text-xs text-gray-400 mt-1">Coba ubah filter area</p>
+        <p className="text-sm font-medium text-[#6E7681]">Tidak ada space ditemukan</p>
+        <p className="text-xs text-[#6E7681]/70 mt-1">Coba ubah filter area</p>
       </div>
     );
   }
