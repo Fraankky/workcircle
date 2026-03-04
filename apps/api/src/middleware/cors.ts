@@ -1,8 +1,11 @@
 import { cors } from "hono/cors";
-import type { Context } from "../types.js";
+
+const allowedOrigins = (process.env.FRONTEND_URL ?? "http://localhost:5173")
+  .split(",")
+  .map((url) => url.trim());
 
 export const corsMiddleware = cors({
-  origin: ["http://localhost:5173"],
+  origin: allowedOrigins,
   allowHeaders: ["Content-Type", "Authorization"],
   allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   credentials: true,

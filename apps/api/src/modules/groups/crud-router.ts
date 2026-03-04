@@ -12,6 +12,7 @@ export const groupsCrudRouter = new Hono<Context>()
   .get("/", zValidator("query", listGroupsQuerySchema), async (c) => {
     const query = c.req.valid("query");
     const { groups, total } = await listGroups(query);
+    c.header("Cache-Control", "public, max-age=30, stale-while-revalidate=60");
     return c.json({
       data: groups.map(formatGroupBrief),
       meta: { page: query.page, limit: query.limit, total, has_more: query.page * query.limit < total },
@@ -43,6 +44,7 @@ export const groupsCrudRouter = new Hono<Context>()
     const id = c.req.param("id");
     const group = await getGroup(id);
     if (!group) throw new NotFoundError("Grup");
+    c.header("Cache-Control", "public, max-age=30, stale-while-revalidate=60");
     return c.json({ data: formatGroupFull(group) });
   })
 

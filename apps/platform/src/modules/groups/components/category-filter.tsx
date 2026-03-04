@@ -21,8 +21,8 @@ export function CategoryFilter({ selected, onChange }: CategoryFilterProps) {
             className={cn(
               "px-3 py-1.5 rounded text-xs font-medium transition-all duration-100",
               active
-                ? "bg-[#58A6FF] text-[#0D1117]"
-                : "bg-[#21262D] border border-[#30363D] text-[#6E7681] hover:border-[#484F58] hover:text-[#C9D1D9]",
+                ? "bg-fg text-bg"
+                : "bg-surface border border-border text-faint hover:border-overlay hover:text-fg",
             )}
           >
             {label}

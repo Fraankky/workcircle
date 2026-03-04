@@ -28,7 +28,7 @@ export function GroupDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <p className="text-sm text-faint">{error ?? "Grup tidak ditemukan"}</p>
-        <Link to="/discover" className="mt-3 text-xs text-accent hover:underline">
+        <Link to="/discover" className="mt-3 text-xs text-fg hover:underline">
           Kembali ke Discover
         </Link>
       </div>
@@ -114,7 +114,7 @@ export function GroupDetailPage() {
               onLeave={handleLeave}
             />
           </div>
-          <div className="flex items-center gap-2 pt-2 border-t border-[#21262D]">
+          <div className="flex items-center gap-2 pt-2 border-t border-border-dim">
             <Avatar src={group.admin.avatar_url} name={group.admin.name} size="xs" />
             <span className="text-xs text-muted truncate">{group.admin.name}</span>
             <span className="ml-auto text-xs text-faint font-medium whitespace-nowrap">
@@ -208,7 +208,7 @@ function ActionButton({
     return (
       <button
         onClick={onLeave}
-        className="shrink-0 text-xs font-medium border border-border text-muted px-3 py-2 rounded hover:bg-[#21262D] hover:text-danger transition-colors"
+        className="shrink-0 text-xs font-medium border border-border text-muted px-3 py-2 rounded hover:bg-overlay hover:text-danger transition-colors"
       >
         Keluar
       </button>
@@ -217,7 +217,7 @@ function ActionButton({
 
   if (myRequest?.status === "pending") {
     return (
-      <span className="shrink-0 text-xs font-medium bg-[#21262D] text-faint px-3 py-2 rounded border border-border">
+      <span className="shrink-0 text-xs font-medium bg-overlay text-faint px-3 py-2 rounded border border-border">
         Menunggu
       </span>
     );

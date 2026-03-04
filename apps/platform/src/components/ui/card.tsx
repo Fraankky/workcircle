@@ -4,14 +4,14 @@ import type { HTMLAttributes } from "react";
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded border border-[#30363D] bg-[#161B22]", className)}
+      className={cn("rounded border border-border bg-surface", className)}
       {...props}
     />
   );
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-5 py-4 border-b border-[#30363D]", className)} {...props} />;
+  return <div className={cn("px-5 py-4 border-b border-border", className)} {...props} />;
 }
 
 export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
@@ -19,5 +19,5 @@ export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivEleme
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-5 py-4 border-t border-[#30363D]", className)} {...props} />;
+  return <div className={cn("px-5 py-4 border-t border-border", className)} {...props} />;
 }

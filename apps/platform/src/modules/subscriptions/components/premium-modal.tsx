@@ -32,7 +32,7 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
   return (
     <Modal open={open} onClose={onClose} title="Pilih Paket">
       <div className="space-y-4">
-        <p className="text-sm text-[#8B949E]">
+        <p className="text-sm text-muted">
           Upgrade untuk membuat dan mengelola grup kerjamu sendiri.
         </p>
         <div className="grid grid-cols-1 gap-4 pt-1">

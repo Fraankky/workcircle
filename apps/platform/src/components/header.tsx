@@ -8,8 +8,8 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-bg border-b border-border flex items-center justify-between px-4">
-      <span className="text-sm font-bold text-acccent tracking-tight">WorkCircle</span>
+    <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-overlay backdrop-blur-xl border-b border-border flex items-center justify-between px-4">
+      <span className="text-sm font-bold text-fg tracking-tight">WorkCircle</span>
       <div className="flex items-center gap-2">
         {user && <Avatar src={user.avatarUrl} name={user.name} size="xs" />}
         <button
@@ -29,7 +29,7 @@ export function Header() {
       </div>
 
       {menuOpen && (
-        <div className="absolute top-14 left-0 right-0 bg-surface border-b border-border py-2">
+        <div className="absolute top-14 left-0 right-0 bg-overlay backdrop-blur-xl border-b border-border py-2">
           {[
             { to: "/discover", label: "Discover" },
             { to: "/groups", label: "My Groups" },
@@ -40,7 +40,7 @@ export function Header() {
               key={item.to}
               to={item.to}
               onClick={() => setMenuOpen(false)}
-              className="block px-4 py-2.5 text-sm text-muted hover:bg-[#21262D] hover:text-fg transition-colors"
+              className="block px-4 py-2.5 text-sm text-muted hover:bg-overlay hover:text-fg transition-colors"
             >
               {item.label}
             </Link>

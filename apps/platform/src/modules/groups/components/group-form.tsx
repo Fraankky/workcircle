@@ -17,14 +17,14 @@ interface GroupFormProps {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-[10px] font-medium text-[#8B949E] uppercase tracking-widest">{label}</label>
+      <label className="text-[10px] font-medium text-muted uppercase tracking-widest">{label}</label>
       {children}
     </div>
   );
 }
 
 const inputCls =
-  "w-full text-sm border border-[#30363D] bg-[#1C2128] text-[#C9D1D9] rounded px-3 py-2 focus:border-[#58A6FF] focus:outline-none transition-colors placeholder-[#6E7681]";
+  "w-full text-sm border border-border bg-surface-2 text-fg rounded px-3 py-2 focus:border-fg/30 focus:outline-none transition-colors placeholder-faint";
 
 export function GroupForm({ onSuccess }: GroupFormProps) {
   const { createGroup, isLoading, error } = useCreateGroup();
@@ -176,9 +176,9 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
           max={50}
           value={maxMembers}
           onChange={(e) => setMaxMembers(Number(e.target.value))}
-          className="w-full accent-[#58A6FF]"
+          className="w-full accent-fg"
         />
-        <div className="flex justify-between text-[10px] text-[#6E7681] mt-0.5">
+        <div className="flex justify-between text-[10px] text-faint mt-0.5">
           <span>2</span><span>50</span>
         </div>
       </Field>
@@ -211,29 +211,29 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
         <div
           onClick={() => setRequireApproval(!requireApproval)}
           className={`w-10 h-6 rounded-full transition-colors relative ${
-            requireApproval ? "bg-[#58A6FF]" : "bg-[#30363D]"
+            requireApproval ? "bg-fg" : "bg-border"
           }`}
         >
           <span
-            className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+            className={`absolute top-1 w-4 h-4 rounded-full bg-bg shadow transition-transform ${
               requireApproval ? "translate-x-5" : "translate-x-1"
             }`}
           />
         </div>
         <div>
-          <p className="text-sm font-medium text-[#C9D1D9]">Require Approval</p>
-          <p className="text-xs text-[#6E7681]">
+          <p className="text-sm font-medium text-fg">Require Approval</p>
+          <p className="text-xs text-faint">
             {requireApproval ? "Admin perlu menyetujui setiap anggota baru" : "Siapa saja bisa langsung bergabung"}
           </p>
         </div>
       </label>
 
-      {error && <p className="text-xs text-[#F85149]">{error}</p>}
+      {error && <p className="text-xs text-danger">{error}</p>}
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-[#58A6FF] text-[#0D1117] text-sm font-medium py-2.5 rounded hover:bg-[#388BFD] disabled:opacity-50 transition-colors"
+        className="w-full bg-fg text-bg text-sm font-medium py-2.5 rounded hover:opacity-85 disabled:opacity-50 transition-all"
       >
         {isLoading ? "Membuat grup..." : "Buat Grup"}
       </button>

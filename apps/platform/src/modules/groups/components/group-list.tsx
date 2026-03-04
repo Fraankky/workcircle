@@ -23,10 +23,10 @@ export function GroupList({ groups, isLoading, error, emptyMessage }: GroupListP
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm text-[#6E7681]">{error}</p>
+        <p className="text-sm text-faint">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-3 text-xs text-[#58A6FF] hover:underline"
+          className="mt-3 text-xs text-fg hover:underline"
         >
           Coba lagi
         </button>
@@ -37,10 +37,10 @@ export function GroupList({ groups, isLoading, error, emptyMessage }: GroupListP
   if (groups.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm font-medium text-[#6E7681]">
+        <p className="text-sm font-medium text-faint">
           {emptyMessage ?? "Belum ada grup yang ditemukan"}
         </p>
-        <p className="text-xs text-[#6E7681]/70 mt-1">Coba ubah filter atau kata pencarian</p>
+        <p className="text-xs text-faint/70 mt-1">Coba ubah filter atau kata pencarian</p>
       </div>
     );
   }

@@ -40,10 +40,10 @@ function SpaceMarkerIcon({ isSelected }: { isSelected?: boolean }) {
         width: size,
         height: size,
         borderRadius: "50%",
-        background: "#58A6FF",
-        border: "2.5px solid #0D1117",
+        background: "#FFFFFF",
+        border: "2.5px solid #07070A",
         boxShadow: isSelected
-          ? "0 0 0 3px rgba(88,166,255,0.3), 0 2px 8px rgba(0,0,0,0.5)"
+          ? "0 0 0 3px rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.5)"
           : "0 2px 4px rgba(0,0,0,0.4)",
         display: "flex",
         alignItems: "center",
@@ -55,7 +55,7 @@ function SpaceMarkerIcon({ isSelected }: { isSelected?: boolean }) {
           width: dotSize,
           height: dotSize,
           borderRadius: "50%",
-          background: "#0D1117",
+          background: "#07070A",
         }}
       />
     </div>
@@ -64,35 +64,35 @@ function SpaceMarkerIcon({ isSelected }: { isSelected?: boolean }) {
 
 function SpacePopupContent({ space }: { space: Space }) {
   return (
-    <div style={{ width: 220, overflow: "hidden", borderRadius: 6, background: "#161B22", border: "1px solid #30363D", fontFamily: "inherit" }}>
+    <div style={{ width: 220, overflow: "hidden", borderRadius: 6, background: "rgba(255,255,255,0.06)", backdropFilter: "blur(14px)", border: "1px solid rgba(255,255,255,0.08)", fontFamily: "inherit" }}>
       {/* Header */}
-      <div style={{ background: "#1F3558", borderBottom: "1px solid #30363D", padding: "8px 12px" }}>
-        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#C9D1D9", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{space.name}</p>
-        <p style={{ margin: 0, fontSize: 11, color: "#58A6FF", marginTop: 2 }}>{space.area}</p>
+      <div style={{ background: "rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "8px 12px" }}>
+        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#FFFFFF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{space.name}</p>
+        <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.50)", marginTop: 2 }}>{space.area}</p>
       </div>
 
       {/* Body */}
       <div style={{ padding: "8px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
         {/* Rating + seats */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 11, color: "#8B949E" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4, color: "#D29922", fontWeight: 600 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 11, color: "rgba(255,255,255,0.50)" }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 4, color: "rgba(255,210,100,0.80)", fontWeight: 600 }}>
             ★ {space.rating.toFixed(1)}
           </span>
           {space.seat_count && (
             <span>{space.seat_count} kursi</span>
           )}
           {space.active_groups > 0 && (
-            <span style={{ color: "#58A6FF" }}>{space.active_groups} grup</span>
+            <span style={{ color: "rgba(255,255,255,0.70)" }}>{space.active_groups} grup</span>
           )}
         </div>
 
         {/* WiFi */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-          <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "#21262D", color: "#8B949E", border: "1px solid #30363D" }}>
+          <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.08)" }}>
             {WIFI_LABEL[space.wifi_speed]}
           </span>
           {space.has_power && (
-            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "#1F3558", color: "#58A6FF", border: "1px solid rgba(88,166,255,0.3)" }}>
+            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.08)" }}>
               ⚡ Power
             </span>
           )}
@@ -100,7 +100,7 @@ function SpacePopupContent({ space }: { space: Space }) {
 
         {/* Price */}
         {space.price_range && (
-          <p style={{ margin: 0, fontSize: 11, color: "#6E7681" }}>{space.price_range}</p>
+          <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.25)" }}>{space.price_range}</p>
         )}
       </div>
     </div>
@@ -162,7 +162,7 @@ export function SpaceMap({
 
       {/* Fallback: kalau tidak ada space dengan koordinat */}
       {spacesWithCoords.length === 0 && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded bg-[#161B22]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded bg-surface">
           <svg
             width="32"
             height="32"
@@ -170,12 +170,12 @@ export function SpaceMap({
             fill="none"
             stroke="currentColor"
             strokeWidth="1.5"
-            className="text-[#30363D]"
+            className="text-border"
           >
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          <p className="text-xs font-medium text-[#6E7681]">
+          <p className="text-xs font-medium text-faint">
             Tidak ada lokasi tersedia
           </p>
         </div>

@@ -11,7 +11,7 @@ export function GroupsPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="h-6 w-32 bg-[#21262D] animate-pulse rounded" />
+        <div className="h-6 w-32 bg-overlay animate-pulse rounded" />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => <GroupCardSkeleton key={i} />)}
         </div>
@@ -25,7 +25,7 @@ export function GroupsPage() {
         <p className="text-sm text-faint">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-3 text-xs text-accent hover:underline"
+          className="mt-3 text-xs text-fg hover:underline"
         >
           Coba lagi
         </button>
@@ -42,7 +42,7 @@ export function GroupsPage() {
         </div>
         <Link
           to="/discover"
-          className="text-xs text-accent hover:underline"
+          className="text-xs text-fg hover:underline"
         >
           Jelajahi grup
         </Link>
@@ -92,7 +92,7 @@ function GroupSection({
           <p className="text-sm text-faint">{emptyText}</p>
           <Link
             to={emptyCta.to}
-            className="mt-2 text-xs text-accent font-medium hover:underline"
+            className="mt-2 text-xs text-fg font-medium hover:underline"
           >
             {emptyCta.label}
           </Link>

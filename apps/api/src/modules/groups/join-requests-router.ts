@@ -3,7 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import type { Context } from "../../types.js";
 import { requireAuth } from "../../middleware/auth.js";
 import { ForbiddenError, NotFoundError } from "../../exceptions.js";
-import { submitJoinRequestSchema, reviewJoinRequestSchema } from "./join-requests-schema.js";
+import { submitJoinRequestSchema, reviewJoinRequestSchema, listJoinRequestsQuerySchema } from "./join-requests-schema.js";
 import {
   submitJoinRequest,
   getJoinRequestsForGroup,
@@ -25,12 +25,16 @@ export const joinRequestsRouter = new Hono<Context>()
     return c.json({ data: formatJoinRequest(req) }, 201);
   })
 
-  .get("/", requireAuth, async (c) => {
+  .get("/", requireAuth, zValidator("query", listJoinRequestsQuerySchema), async (c) => {
     const user = c.get("user")!;
     const groupId = c.req.param("id")!;
+    const query = c.req.valid("query");
     await assertGroupAdmin(groupId, user.id);
-    const requests = await getJoinRequestsForGroup(groupId);
-    return c.json({ data: requests.map(formatJoinRequest) });
+    const { requests, total } = await getJoinRequestsForGroup(groupId, query);
+    return c.json({
+      data: requests.map(formatJoinRequest),
+      meta: { page: query.page, limit: query.limit, total, has_more: query.page * query.limit < total },
+    });
   })
 
   .get("/me", requireAuth, async (c) => {

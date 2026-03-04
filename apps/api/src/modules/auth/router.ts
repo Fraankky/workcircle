@@ -4,6 +4,7 @@ import { setCookie, deleteCookie } from "hono/cookie";
 import { SignJWT } from "jose";
 import type { Context } from "../../types.js";
 import { requireAuth } from "../../middleware/auth.js";
+import { rateLimit } from "../../middleware/rate-limit.js";
 import { UnauthorizedError } from "../../exceptions.js";
 import {
   registerSchema,
@@ -45,7 +46,10 @@ async function signToken(payload: {
     .sign(JWT_SECRET);
 }
 
-authRouter.post("/register", zValidator("json", registerSchema), async (c) => {
+const loginRateLimit = rateLimit({ max: 10, windowMs: 15 * 60 * 1000, message: "Terlalu banyak percobaan login. Coba lagi dalam 15 menit." });
+const registerRateLimit = rateLimit({ max: 5, windowMs: 15 * 60 * 1000, message: "Terlalu banyak pendaftaran. Coba lagi dalam 15 menit." });
+
+authRouter.post("/register", registerRateLimit, zValidator("json", registerSchema), async (c) => {
   const body = c.req.valid("json");
   const user = await registerUser(body);
 
@@ -59,7 +63,7 @@ authRouter.post("/register", zValidator("json", registerSchema), async (c) => {
   return c.json({ data: user }, 201);
 });
 
-authRouter.post("/login", zValidator("json", loginSchema), async (c) => {
+authRouter.post("/login", loginRateLimit, zValidator("json", loginSchema), async (c) => {
   const body = c.req.valid("json");
   const user = await loginUser(body);
 

@@ -52,10 +52,10 @@ export function Sidebar() {
   if (!user) return null;
 
   return (
-    <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 border-r border-border bg-surface">
+    <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 border-r border-border bg-overlay backdrop-blur-xl">
       {/* Logo */}
       <div className="px-6 py-8 border-b border-border">
-        <span className="text-xl font-bold text-accent tracking-tight">WorkCircle.</span>
+        <span className="text-xl font-bold text-fg tracking-tight">WorkCircle.</span>
       </div>
 
       {/* Nav */}
@@ -69,8 +69,8 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors",
                 active
-                  ? "bg-[#21262D] text-accent"
-                  : "text-muted hover:bg-[#21262D] hover:text-fg",
+                  ? "bg-overlay text-fg"
+                  : "text-muted hover:bg-overlay hover:text-fg",
               )}
             >
               {item.icon}

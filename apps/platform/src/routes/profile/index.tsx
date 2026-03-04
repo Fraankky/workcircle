@@ -102,7 +102,7 @@ export function ProfilePage() {
             </div>
             <button
               onClick={startEdit}
-              className="shrink-0 text-xs font-medium border border-border text-muted px-3 py-2 rounded hover:bg-[#21262D] hover:text-fg transition-colors"
+              className="shrink-0 text-xs font-medium border border-border text-muted px-3 py-2 rounded hover:bg-overlay hover:text-fg transition-colors"
             >
               Edit
             </button>
@@ -196,14 +196,14 @@ export function ProfilePage() {
             <button
               onClick={handleSave}
               disabled={busy || !form.name.trim()}
-              className="flex-1 bg-accent text-bg text-sm font-medium py-2.5 rounded hover:bg-accent-glow disabled:opacity-50 transition-colors"
+              className="flex-1 bg-fg text-bg text-sm font-medium py-2.5 rounded hover:opacity-85 disabled:opacity-50 transition-all"
             >
               {busy ? "Menyimpan..." : "Simpan"}
             </button>
             <button
               onClick={cancelEdit}
               disabled={busy}
-              className="px-4 text-sm text-muted border border-border rounded hover:bg-[#21262D] hover:text-fg transition-colors"
+              className="px-4 text-sm text-muted border border-border rounded hover:bg-overlay hover:text-fg transition-colors"
             >
               Batal
             </button>
@@ -219,7 +219,7 @@ export function ProfilePage() {
         </div>
         <button
           onClick={handleLogout}
-          className="text-xs font-medium border border-danger/30 text-danger px-3 py-2 rounded hover:bg-[#3D1A1A] transition-colors"
+          className="text-xs font-medium border border-danger/30 text-danger px-3 py-2 rounded hover:bg-danger-dim transition-colors"
         >
           Logout
         </button>
@@ -239,7 +239,7 @@ export function ProfilePage() {
 
 function StatBox({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-[#1C2128] rounded border border-border p-3 text-center">
+    <div className="bg-surface-2 rounded border border-border p-3 text-center">
       <p className="text-lg font-bold text-fg">{value}</p>
       <p className="text-[10px] text-faint uppercase tracking-widest mt-0.5">{label}</p>
     </div>
@@ -303,7 +303,7 @@ function Field({
   multiline?: boolean;
 }) {
   const cls =
-    "w-full text-sm border border-border bg-[#1C2128] text-fg rounded px-3 py-2 focus:border-accent focus:outline-none transition-colors placeholder-[#6E7681]";
+    "w-full text-sm border border-border bg-surface-2 text-fg rounded px-3 py-2 focus:border-fg/30 focus:outline-none transition-colors placeholder-faint";
 
   return (
     <div>

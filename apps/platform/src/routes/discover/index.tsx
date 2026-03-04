@@ -39,7 +39,7 @@ export function DiscoverPage() {
         {user?.plan !== "free" && (
           <Link
             to="/groups/new"
-            className="inline-flex items-center gap-1.5 bg-ascent text-bg text-xs font-medium px-3 py-2 rounded hover:bg-accent-glow transition-colors"
+            className="inline-flex items-center gap-1.5  text-black text-xs font-medium px-3 py-2 rounded hover:bg-accent-glow transition-colors"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />

@@ -246,7 +246,7 @@ function MapPopup({
   return (
     <LeafletPopup
       className={cn(
-        "z-50 w-64 rounded border border-[#30363D] bg-[#161B22] p-0 font-sans shadow-xl",
+        "z-50 w-64 rounded border border-border bg-surface p-0 font-sans shadow-xl",
         className
       )}
       {...props}
@@ -265,7 +265,7 @@ function MapTooltip({
   return (
     <LeafletTooltip
       className={cn(
-        "z-50 w-fit rounded border-none bg-[#21262D] px-2 py-1 text-xs text-[#C9D1D9] shadow-none",
+        "z-50 w-fit rounded border-none bg-overlay px-2 py-1 text-xs text-fg shadow-none",
         className
       )}
       direction="top"
@@ -294,13 +294,13 @@ function MapZoomControl({
 
   return (
     <MapControlContainer className={cn(position, className)}>
-      <div className="flex flex-col overflow-hidden rounded border border-[#30363D] bg-[#161B22] shadow-md">
+      <div className="flex flex-col overflow-hidden rounded border border-border bg-surface shadow-md">
         <button
           type="button"
           aria-label="Zoom in"
           disabled={zoomLevel >= map.getMaxZoom()}
           onClick={() => map.zoomIn()}
-          className="flex h-8 w-8 items-center justify-center border-b border-[#30363D] text-[#8B949E] hover:bg-[#21262D] hover:text-[#C9D1D9] disabled:opacity-40"
+          className="flex h-8 w-8 items-center justify-center border-b border-border text-muted hover:bg-overlay hover:text-fg disabled:opacity-40"
         >
           <svg
             width="14"
@@ -319,7 +319,7 @@ function MapZoomControl({
           aria-label="Zoom out"
           disabled={zoomLevel <= map.getMinZoom()}
           onClick={() => map.zoomOut()}
-          className="flex h-8 w-8 items-center justify-center text-[#8B949E] hover:bg-[#21262D] hover:text-[#C9D1D9] disabled:opacity-40"
+          className="flex h-8 w-8 items-center justify-center text-muted hover:bg-overlay hover:text-fg disabled:opacity-40"
         >
           <svg
             width="14"
@@ -348,7 +348,7 @@ function MapAttribution({
 }) {
   return (
     <MapControlContainer className={cn(position, className)}>
-      <p className="rounded bg-[#0D1117]/80 px-1 py-0.5 text-[10px] text-[#6E7681]">
+      <p className="rounded bg-bg/80 px-1 py-0.5 text-[10px] text-faint">
         &copy;{" "}
         <a
           href="http://www.openstreetmap.org/copyright"

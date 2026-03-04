@@ -10,7 +10,7 @@ export const spacesRouter = new Hono<Context>()
   .get("/", zValidator("query", listSpacesQuerySchema), async (c) => {
     const query = c.req.valid("query");
     const { spaces, total } = await listSpaces(query);
-
+    c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=120");
     return c.json({
       data: spaces.map((s) => ({
         id: s.id,

@@ -40,20 +40,20 @@ export function UpgradePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-lg font-bold text-[#C9D1D9]">Paket & Langganan</h1>
-        <p className="text-xs text-[#6E7681] mt-0.5">
+        <h1 className="text-lg font-bold text-fg">Paket & Langganan</h1>
+        <p className="text-xs text-faint mt-0.5">
           Pilih paket yang sesuai dengan kebutuhanmu
         </p>
       </div>
 
       {/* Current plan info */}
       {subscription && currentPlan !== "free" && (
-        <div className="bg-[#1F3558] border border-[#58A6FF]/20 rounded px-4 py-3 flex items-center justify-between gap-4">
+        <div className="bg-overlay border border-border/30 rounded px-4 py-3 flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold text-[#58A6FF]">
+            <p className="text-xs font-semibold text-fg">
               Plan aktif: {currentPlan.toUpperCase()}
             </p>
-            <p className="text-[10px] text-[#58A6FF]/70 mt-0.5">
+            <p className="text-[10px] text-faint mt-0.5">
               Aktif hingga {formatRelative(subscription.current_period_end)}
             </p>
           </div>
@@ -61,7 +61,7 @@ export function UpgradePage() {
             <button
               onClick={handleCancel}
               disabled={isLoading}
-              className="text-xs text-[#F85149]/60 hover:text-[#F85149] disabled:opacity-50 transition-colors"
+              className="text-xs text-danger/60 hover:text-danger disabled:opacity-50 transition-colors"
             >
               Batalkan
             </button>
@@ -83,7 +83,7 @@ export function UpgradePage() {
         ))}
       </div>
 
-      <p className="text-[10px] text-[#6E7681] text-center">
+      <p className="text-[10px] text-faint text-center">
         Pembayaran diproses melalui Mayar.id. Upgrade ini adalah simulasi untuk demo.
       </p>
     </div>

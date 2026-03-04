@@ -26,19 +26,19 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div
         className={cn(
-          "relative z-10 w-full max-w-md rounded-t sm:rounded border border-[#30363D] bg-[#161B22] max-h-[90vh] overflow-y-auto",
+          "relative z-10 w-full max-w-md rounded-t sm:rounded border border-border bg-surface max-h-[90vh] overflow-y-auto",
           className,
         )}
       >
         {title && (
-          <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#30363D]">
-            <h2 className="text-sm font-semibold text-[#C9D1D9]">{title}</h2>
+          <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border">
+            <h2 className="text-sm font-semibold text-fg">{title}</h2>
             <button
               onClick={onClose}
-              className="text-[#6E7681] hover:text-[#C9D1D9] hover:bg-[#21262D] transition-colors p-1 rounded -mr-1"
+              className="text-muted hover:text-fg hover:bg-overlay transition-colors p-1 rounded -mr-1"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />

@@ -1,6 +1,7 @@
 import { prisma } from "../../utils/prisma.js";
 import { ConflictError, ForbiddenError, NotFoundError } from "../../exceptions.js";
 import { recalcIsOpen } from "./service.js";
+import type { ListJoinRequestsQuery } from "./join-requests-schema.js";
 
 const REQUEST_INCLUDE = {
   user: { select: { id: true, name: true, avatarUrl: true, jobTitle: true, company: true, location: true, bio: true } },
@@ -51,12 +52,23 @@ export async function submitJoinRequest(groupId: string, userId: string, message
   });
 }
 
-export async function getJoinRequestsForGroup(groupId: string) {
-  return prisma.groupJoinRequest.findMany({
-    where: { groupId, status: "pending" },
-    include: REQUEST_INCLUDE,
-    orderBy: { createdAt: "asc" },
-  });
+export async function getJoinRequestsForGroup(groupId: string, query: ListJoinRequestsQuery) {
+  const { page, limit } = query;
+  const skip = (page - 1) * limit;
+  const where = { groupId, status: "pending" as const };
+
+  const [requests, total] = await Promise.all([
+    prisma.groupJoinRequest.findMany({
+      where,
+      include: REQUEST_INCLUDE,
+      orderBy: { createdAt: "asc" },
+      skip,
+      take: limit,
+    }),
+    prisma.groupJoinRequest.count({ where }),
+  ]);
+
+  return { requests, total };
 }
 
 export async function getMyJoinRequest(groupId: string, userId: string) {

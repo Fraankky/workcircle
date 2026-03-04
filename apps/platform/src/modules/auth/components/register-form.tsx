@@ -48,16 +48,16 @@ export function RegisterForm() {
       <Input label="Kota" placeholder="Jakarta Selatan" value={form.location} onChange={set("location")} required />
 
       {error && (
-        <p className="text-sm text-[#F85149] bg-[#3D1A1A] border border-[#F85149]/20 px-3 py-2 rounded">{error}</p>
+        <p className="text-sm text-danger bg-danger-dim border border-danger/20 px-3 py-2 rounded">{error}</p>
       )}
 
       <Button type="submit" className="w-full mt-1" disabled={loading}>
         {loading ? "Mendaftar..." : "Daftar"}
       </Button>
 
-      <p className="text-center text-sm text-[#6E7681]">
+      <p className="text-center text-sm text-faint">
         Sudah punya akun?{" "}
-        <Link to="/login" className="text-[#58A6FF] font-medium hover:underline">
+        <Link to="/login" className="text-fg font-medium hover:underline">
           Masuk
         </Link>
       </p>

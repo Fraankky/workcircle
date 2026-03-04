@@ -10,10 +10,10 @@ export function GroupInfoTab({ group }: GroupInfoTabProps) {
     <div className="space-y-5">
       {/* Description */}
       <div>
-        <h3 className="text-[10px] font-semibold text-[#6E7681] uppercase tracking-widest mb-1.5">
+        <h3 className="text-[10px] font-semibold text-faint uppercase tracking-widest mb-1.5">
           Tentang Grup
         </h3>
-        <p className="text-sm text-[#C9D1D9] leading-relaxed">{group.description}</p>
+        <p className="text-sm text-fg leading-relaxed">{group.description}</p>
       </div>
 
       {/* Details grid */}
@@ -43,14 +43,14 @@ export function GroupInfoTab({ group }: GroupInfoTabProps) {
       {/* Tags */}
       {group.tags.length > 0 && (
         <div>
-          <h3 className="text-[10px] font-semibold text-[#6E7681] uppercase tracking-widest mb-2">
+          <h3 className="text-[10px] font-semibold text-faint uppercase tracking-widest mb-2">
             Tag
           </h3>
           <div className="flex flex-wrap gap-1.5">
             {group.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-0.5 rounded bg-[#21262D] text-xs text-[#8B949E] border border-[#30363D]"
+                className="px-2 py-0.5 rounded bg-overlay text-xs text-muted border border-border"
               >
                 #{tag}
               </span>
@@ -62,14 +62,14 @@ export function GroupInfoTab({ group }: GroupInfoTabProps) {
       {/* Chat link */}
       {group.chat_link && (
         <div>
-          <h3 className="text-[10px] font-semibold text-[#6E7681] uppercase tracking-widest mb-1.5">
+          <h3 className="text-[10px] font-semibold text-faint uppercase tracking-widest mb-1.5">
             Grup Chat
           </h3>
           <a
             href={group.chat_link}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm text-[#58A6FF] hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm text-fg hover:underline"
           >
             <ExternalLinkIcon />
             {group.chat_type
@@ -92,11 +92,11 @@ function InfoRow({
   value: string;
 }) {
   return (
-    <div className="flex items-start gap-2.5 p-3 rounded bg-[#1C2128] border border-[#30363D]">
-      <span className="text-[#6E7681] mt-0.5 flex-shrink-0">{icon}</span>
+    <div className="flex items-start gap-2.5 p-3 rounded bg-surface-2 border border-border">
+      <span className="text-faint mt-0.5 flex-shrink-0">{icon}</span>
       <div>
-        <p className="text-[10px] text-[#6E7681] uppercase tracking-wide font-medium">{label}</p>
-        <p className="text-sm text-[#C9D1D9] font-medium mt-0.5">{value}</p>
+        <p className="text-[10px] text-faint uppercase tracking-wide font-medium">{label}</p>
+        <p className="text-sm text-fg font-medium mt-0.5">{value}</p>
       </div>
     </div>
   );

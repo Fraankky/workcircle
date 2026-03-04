@@ -25,14 +25,14 @@ export function GroupMembersTab({ group, isAdmin, onRefetch }: GroupMembersTabPr
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <p className="text-2xl mb-2 opacity-30">—</p>
-        <p className="text-sm text-[#6E7681]">Belum ada anggota</p>
+        <p className="text-sm text-faint">Belum ada anggota</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-[#6E7681]">
+      <p className="text-xs text-faint">
         {group.member_count}/{group.max_members} anggota
       </p>
       {members.map((member) => (
