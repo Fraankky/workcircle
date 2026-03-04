@@ -1,18 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { useGroups } from "../../modules/groups/hooks";
 import { GroupList } from "../../modules/groups/components/group-list";
 import { CategoryFilter } from "../../modules/groups/components/category-filter";
 import { useAuth } from "../../modules/auth/hooks";
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(t);
-  }, [value, delay]);
-  return debounced;
-}
+import { useDebounce } from "../../lib/hooks/use-debounce";
+import { PageHeader } from "../../components/ui/page-header";
 
 export function DiscoverPage() {
   const { user } = useAuth();
@@ -30,16 +23,11 @@ export function DiscoverPage() {
 
   return (
     <div className="space-y-5 p-6">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-bold text-fg">Discover</h1>
-          <p className="text-xs text-muted mt-0.5">Temukan komunitas kerja barengmu</p>
-        </div>
+      <PageHeader title="Discover" subtitle="Temukan komunitas kerja barengmu">
         {user?.plan !== "free" && (
           <Link
             to="/groups/new"
-            className="inline-flex items-center gap-1.5  text-black text-xs font-medium px-3 py-2 rounded hover:bg-accent-glow transition-colors"
+            className="inline-flex items-center gap-1.5 text-black text-xs font-medium px-3 py-2 rounded hover:bg-accent-glow transition-colors"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -47,7 +35,7 @@ export function DiscoverPage() {
             Buat Grup
           </Link>
         )}
-      </div>
+      </PageHeader>
 
       {/* Search + sort */}
       <div className="flex gap-2">

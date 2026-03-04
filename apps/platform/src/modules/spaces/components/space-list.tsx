@@ -1,6 +1,7 @@
 import type { Space } from "../types";
 import { SpaceCard } from "./space-card";
 import { SpaceCardSkeleton } from "../../../components/ui/skeleton";
+import { ErrorState, EmptyState } from "../../../components/ui/error-state";
 
 interface SpaceListProps {
   spaces: Space[];
@@ -19,27 +20,10 @@ export function SpaceList({ spaces, isLoading, error }: SpaceListProps) {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm text-faint">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-3 text-xs text-fg hover:underline"
-        >
-          Coba lagi
-        </button>
-      </div>
-    );
-  }
+  if (error) return <ErrorState message={error} />;
 
   if (spaces.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm font-medium text-faint">Tidak ada space ditemukan</p>
-        <p className="text-xs text-faint/70 mt-1">Coba ubah filter area</p>
-      </div>
-    );
+    return <EmptyState message="Tidak ada space ditemukan" hint="Coba ubah filter area" />;
   }
 
   return (

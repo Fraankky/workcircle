@@ -1,4 +1,4 @@
-import { api } from "../../../lib/api-client";
+import { useGroupActions } from "../hooks/use-group-actions";
 import { MemberCard } from "./member-card";
 import type { Group } from "../types";
 
@@ -10,12 +10,12 @@ interface GroupMembersTabProps {
 
 export function GroupMembersTab({ group, isAdmin, onRefetch }: GroupMembersTabProps) {
   const members = group.members ?? [];
+  const { kick } = useGroupActions(group.id, onRefetch);
 
   async function handleKick(userId: string) {
     if (!confirm("Yakin ingin mengeluarkan anggota ini?")) return;
     try {
-      await api.post(`/api/groups/${group.id}/kick`, { user_id: userId });
-      onRefetch();
+      await kick(userId);
     } catch {
       alert("Gagal mengeluarkan anggota");
     }

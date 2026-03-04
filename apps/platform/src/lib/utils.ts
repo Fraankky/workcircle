@@ -11,14 +11,6 @@ export function getInitials(name: string): string {
     .toUpperCase();
 }
 
-export function formatTime(timeStart: string, timeEnd: string): string {
-  return `${timeStart} – ${timeEnd}`;
-}
-
-export function formatSchedule(schedule: string): string {
-  return schedule;
-}
-
 export function formatRelative(date: string | Date): string {
   const d = typeof date === "string" ? new Date(date) : date;
   const diffMs = Date.now() - d.getTime();

@@ -10,17 +10,11 @@ import {
   MapZoomControl,
 } from "../../../components/ui/map";
 import { cn } from "../../../lib/utils";
+import { WIFI_LABELS } from "../../../lib/constants";
 import type { Space } from "../types";
 
 // Jakarta sebagai default center
 const JAKARTA_CENTER: LatLngExpression = [-6.2088, 106.8456];
-
-const WIFI_LABEL: Record<Space["wifi_speed"], string> = {
-  slow: "WiFi Lambat",
-  medium: "WiFi Sedang",
-  fast: "WiFi Cepat",
-  very_fast: "WiFi Sangat Cepat",
-};
 
 interface SpaceMapProps {
   spaces: Space[];
@@ -89,7 +83,7 @@ function SpacePopupContent({ space }: { space: Space }) {
         {/* WiFi */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
           <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            {WIFI_LABEL[space.wifi_speed]}
+            {WIFI_LABELS[space.wifi_speed]}
           </span>
           {space.has_power && (
             <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.08)" }}>

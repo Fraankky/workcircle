@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useParams, Link } from "@tanstack/react-router";
+import { BackLink } from "../../components/ui/back-link";
 import { useGroupDetail } from "../../modules/groups/hooks";
+import { useGroupActions } from "../../modules/groups/hooks/use-group-actions";
 import { GroupInfoTab } from "../../modules/groups/components/group-info-tab";
 import { GroupMembersTab } from "../../modules/groups/components/group-members-tab";
 import { GroupWaitlistTab } from "../../modules/groups/components/group-waitlist-tab";
@@ -8,9 +10,8 @@ import { Avatar } from "../../components/ui/avatar";
 import { Badge } from "../../components/ui/badge";
 import { Modal } from "../../components/ui/modal";
 import { GroupDetailSkeleton } from "../../components/ui/skeleton";
-import { api, ApiError } from "../../lib/api-client";
+import { ActionButton } from "../../modules/groups/components/action-button";
 import { CATEGORY_LABELS } from "../../lib/constants";
-import type { JoinRequest } from "../../modules/groups/types";
 
 type Tab = "info" | "members" | "waitlist";
 
@@ -18,10 +19,10 @@ export function GroupDetailPage() {
   const { id } = useParams({ strict: false }) as { id: string };
   const { group, myRequest, isLoading, error, isAdmin, isMember, refetch } =
     useGroupDetail(id);
+  const { join, leave, isJoining: busy } = useGroupActions(id, refetch);
   const [tab, setTab] = useState<Tab>("info");
   const [joinOpen, setJoinOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [busy, setBusy] = useState(false);
 
   if (isLoading) return <GroupDetailSkeleton />;
   if (error || !group) {
@@ -36,28 +37,21 @@ export function GroupDetailPage() {
   }
 
   async function handleJoin() {
-    setBusy(true);
     try {
-      await api.post(`/api/groups/${id}/join-requests`, {
-        message: message || undefined,
-      });
+      await join(message || undefined);
       setJoinOpen(false);
       setMessage("");
-      refetch();
-    } catch (err) {
-      alert(err instanceof ApiError ? err.message : "Gagal bergabung");
-    } finally {
-      setBusy(false);
+    } catch {
+      alert("Gagal bergabung");
     }
   }
 
   async function handleLeave() {
     if (!confirm("Yakin ingin keluar dari grup ini?")) return;
     try {
-      await api.post(`/api/groups/${id}/leave`);
-      refetch();
-    } catch (err) {
-      alert(err instanceof ApiError ? err.message : "Gagal keluar");
+      await leave();
+    } catch {
+      alert("Gagal keluar");
     }
   }
 
@@ -79,15 +73,7 @@ export function GroupDetailPage() {
 
   return (
     <div className="space-y-5 max-w-2xl mx-auto p-8">
-      <Link
-        to="/discover"
-        className="inline-flex items-center gap-1 text-xs text-faint hover:text-fg transition-colors"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-        Kembali
-      </Link>
+      <BackLink to="/discover" />
 
       {/* Header card */}
       <div className="bg-surface rounded border border-border overflow-hidden">
@@ -187,54 +173,3 @@ export function GroupDetailPage() {
   );
 }
 
-function ActionButton({
-  isAdmin,
-  isMember,
-  myRequest,
-  isOpen,
-  onJoin,
-  onLeave,
-}: {
-  isAdmin: boolean;
-  isMember: boolean;
-  myRequest: JoinRequest | null;
-  isOpen: boolean;
-  onJoin: () => void;
-  onLeave: () => void;
-}) {
-  if (isAdmin) return null;
-
-  if (isMember) {
-    return (
-      <button
-        onClick={onLeave}
-        className="shrink-0 text-xs font-medium border border-border text-muted px-3 py-2 rounded hover:bg-overlay hover:text-danger transition-colors"
-      >
-        Keluar
-      </button>
-    );
-  }
-
-  if (myRequest?.status === "pending") {
-    return (
-      <span className="shrink-0 text-xs font-medium bg-overlay text-faint px-3 py-2 rounded border border-border">
-        Menunggu
-      </span>
-    );
-  }
-
-  if (!isOpen) {
-    return (
-      <span className="shrink-0 text-xs text-faint px-3 py-2">Penuh</span>
-    );
-  }
-
-  return (
-    <button
-      onClick={onJoin}
-      className="shrink-0 text-xs font-medium bg-accent text-bg px-3 py-2 rounded hover:bg-accent-glow transition-colors"
-    >
-      Bergabung
-    </button>
-  );
-}

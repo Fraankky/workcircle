@@ -1,14 +1,6 @@
-import { useState, useEffect } from "react";
-import { useCreateGroup } from "../hooks";
+import { useGroupForm } from "../hooks/use-group-form";
 import { TagInput } from "./tag-input";
-import { api } from "../../../lib/api-client";
 import { CATEGORY_LABELS, SCHEDULES, VIBES, CHAT_TYPE_LABELS } from "../../../lib/constants";
-
-interface SpaceOption {
-  id: string;
-  name: string;
-  area: string;
-}
 
 interface GroupFormProps {
   onSuccess: (groupId: string) => void;
@@ -27,56 +19,15 @@ const inputCls =
   "w-full text-sm border border-border bg-surface-2 text-fg rounded px-3 py-2 focus:border-fg/30 focus:outline-none transition-colors placeholder-faint";
 
 export function GroupForm({ onSuccess }: GroupFormProps) {
-  const { createGroup, isLoading, error } = useCreateGroup();
-  const [spaces, setSpaces] = useState<SpaceOption[]>([]);
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(Object.keys(CATEGORY_LABELS)[0]);
-  const [vibe, setVibe] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [spaceId, setSpaceId] = useState("");
-  const [schedule, setSchedule] = useState(SCHEDULES[0]);
-  const [timeStart, setTimeStart] = useState("09:00");
-  const [timeEnd, setTimeEnd] = useState("12:00");
-  const [maxMembers, setMaxMembers] = useState(10);
-  const [chatLink, setChatLink] = useState("");
-  const [chatType, setChatType] = useState("");
-  const [requireApproval, setRequireApproval] = useState(true);
-
-  useEffect(() => {
-    api.list<SpaceOption>("/api/spaces")
-      .then((r) => setSpaces(r.data))
-      .catch(() => {});
-  }, []);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const group = await createGroup({
-      name,
-      description,
-      category,
-      vibe: vibe || undefined,
-      tags,
-      spaceId: spaceId || undefined,
-      schedule,
-      timeStart,
-      timeEnd,
-      maxMembers,
-      chatLink: chatLink || undefined,
-      chatType: chatType || undefined,
-      requireApproval,
-    }).catch(() => null);
-    if (group) onSuccess(group.id);
-  }
+  const { form, set, spaces, isLoading, error, submit } = useGroupForm(onSuccess);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={submit} className="space-y-5">
       <Field label="Nama Grup *">
         <input
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={form.name}
+          onChange={(e) => set("name")(e.target.value)}
           placeholder="Nama grup kamu"
           required
           className={inputCls}
@@ -85,8 +36,8 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
 
       <Field label="Deskripsi *">
         <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={form.description}
+          onChange={(e) => set("description")(e.target.value)}
           placeholder="Ceritakan tentang grup ini..."
           rows={3}
           required
@@ -97,8 +48,8 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Kategori *">
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={form.category}
+            onChange={(e) => set("category")(e.target.value)}
             className={inputCls}
           >
             {Object.entries(CATEGORY_LABELS).map(([v, l]) => (
@@ -109,8 +60,8 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
 
         <Field label="Vibe">
           <select
-            value={vibe}
-            onChange={(e) => setVibe(e.target.value)}
+            value={form.vibe}
+            onChange={(e) => set("vibe")(e.target.value)}
             className={inputCls}
           >
             <option value="">Pilih vibe...</option>
@@ -120,13 +71,13 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
       </div>
 
       <Field label="Tags (maks. 5)">
-        <TagInput tags={tags} onChange={setTags} />
+        <TagInput tags={form.tags} onChange={set("tags")} />
       </Field>
 
       <Field label="Lokasi (Space)">
         <select
-          value={spaceId}
-          onChange={(e) => setSpaceId(e.target.value)}
+          value={form.spaceId}
+          onChange={(e) => set("spaceId")(e.target.value)}
           className={inputCls}
         >
           <option value="">Pilih space atau kosongkan</option>
@@ -140,8 +91,8 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
 
       <Field label="Jadwal *">
         <select
-          value={schedule}
-          onChange={(e) => setSchedule(e.target.value)}
+          value={form.schedule}
+          onChange={(e) => set("schedule")(e.target.value)}
           className={inputCls}
         >
           {SCHEDULES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -152,8 +103,8 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
         <Field label="Waktu Mulai *">
           <input
             type="time"
-            value={timeStart}
-            onChange={(e) => setTimeStart(e.target.value)}
+            value={form.timeStart}
+            onChange={(e) => set("timeStart")(e.target.value)}
             required
             className={inputCls}
           />
@@ -161,21 +112,21 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
         <Field label="Waktu Selesai *">
           <input
             type="time"
-            value={timeEnd}
-            onChange={(e) => setTimeEnd(e.target.value)}
+            value={form.timeEnd}
+            onChange={(e) => set("timeEnd")(e.target.value)}
             required
             className={inputCls}
           />
         </Field>
       </div>
 
-      <Field label={`Maksimal Anggota: ${maxMembers}`}>
+      <Field label={`Maksimal Anggota: ${form.maxMembers}`}>
         <input
           type="range"
           min={2}
           max={50}
-          value={maxMembers}
-          onChange={(e) => setMaxMembers(Number(e.target.value))}
+          value={form.maxMembers}
+          onChange={(e) => set("maxMembers")(Number(e.target.value))}
           className="w-full accent-fg"
         />
         <div className="flex justify-between text-[10px] text-faint mt-0.5">
@@ -187,16 +138,16 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
         <Field label="Link Grup Chat">
           <input
             type="url"
-            value={chatLink}
-            onChange={(e) => setChatLink(e.target.value)}
+            value={form.chatLink}
+            onChange={(e) => set("chatLink")(e.target.value)}
             placeholder="https://..."
             className={inputCls}
           />
         </Field>
         <Field label="Platform Chat">
           <select
-            value={chatType}
-            onChange={(e) => setChatType(e.target.value)}
+            value={form.chatType}
+            onChange={(e) => set("chatType")(e.target.value)}
             className={inputCls}
           >
             <option value="">Pilih platform</option>
@@ -209,21 +160,23 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
 
       <label className="flex items-center gap-3 cursor-pointer">
         <div
-          onClick={() => setRequireApproval(!requireApproval)}
+          onClick={() => set("requireApproval")(!form.requireApproval)}
           className={`w-10 h-6 rounded-full transition-colors relative ${
-            requireApproval ? "bg-fg" : "bg-border"
+            form.requireApproval ? "bg-fg" : "bg-border"
           }`}
         >
           <span
             className={`absolute top-1 w-4 h-4 rounded-full bg-bg shadow transition-transform ${
-              requireApproval ? "translate-x-5" : "translate-x-1"
+              form.requireApproval ? "translate-x-5" : "translate-x-1"
             }`}
           />
         </div>
         <div>
           <p className="text-sm font-medium text-fg">Require Approval</p>
           <p className="text-xs text-faint">
-            {requireApproval ? "Admin perlu menyetujui setiap anggota baru" : "Siapa saja bisa langsung bergabung"}
+            {form.requireApproval
+              ? "Admin perlu menyetujui setiap anggota baru"
+              : "Siapa saja bisa langsung bergabung"}
           </p>
         </div>
       </label>

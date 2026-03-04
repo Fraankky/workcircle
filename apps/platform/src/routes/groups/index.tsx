@@ -3,6 +3,8 @@ import { useMyGroups } from "../../modules/groups/hooks/use-my-groups";
 import { GroupCard } from "../../modules/groups/components/group-card";
 import { GroupCardSkeleton } from "../../components/ui/skeleton";
 import { Badge } from "../../components/ui/badge";
+import { PageHeader } from "../../components/ui/page-header";
+import { ErrorState } from "../../components/ui/error-state";
 import type { Group } from "../../modules/groups/types";
 
 export function GroupsPage() {
@@ -19,34 +21,15 @@ export function GroupsPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <p className="text-sm text-faint">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-3 text-xs text-fg hover:underline"
-        >
-          Coba lagi
-        </button>
-      </div>
-    );
-  }
+  if (error) return <ErrorState message={error} padding="py-20" />;
 
   return (
     <div className="space-y-8 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-bold text-fg">Grup Saya</h1>
-          <p className="text-xs text-muted mt-0.5">Grup yang kamu admin dan ikuti</p>
-        </div>
-        <Link
-          to="/discover"
-          className="text-xs text-fg hover:underline"
-        >
+      <PageHeader title="Grup Saya" subtitle="Grup yang kamu admin dan ikuti">
+        <Link to="/discover" className="text-xs text-fg hover:underline">
           Jelajahi grup
         </Link>
-      </div>
+      </PageHeader>
 
       <GroupSection
         title="Grup yang Kamu Admin"

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useSpaces } from "../../modules/spaces/hooks/use-spaces";
 import { SpaceList } from "../../modules/spaces/components/space-list";
 import { SpaceMap } from "../../modules/spaces/components/space-map";
+import { PageHeader } from "../../components/ui/page-header";
 
 export function SpacesPage() {
   const [area, setArea] = useState("");
@@ -17,13 +18,7 @@ export function SpacesPage() {
 
   return (
     <div className="space-y-5 p-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-lg font-bold text-fg">Spaces</h1>
-        <p className="text-xs text-muted mt-0.5">
-          Temukan tempat kerja bareng yang pas
-        </p>
-      </div>
+      <PageHeader title="Spaces" subtitle="Temukan tempat kerja bareng yang pas" />
 
       {/* Interactive map */}
       <div className="h-64 rounded overflow-hidden border border-border">

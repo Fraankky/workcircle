@@ -1,6 +1,7 @@
 import type { Group } from "../types";
 import { GroupCard } from "./group-card";
 import { GroupCardSkeleton } from "../../../components/ui/skeleton";
+import { ErrorState, EmptyState } from "../../../components/ui/error-state";
 
 interface GroupListProps {
   groups: Group[];
@@ -20,28 +21,14 @@ export function GroupList({ groups, isLoading, error, emptyMessage }: GroupListP
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm text-faint">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-3 text-xs text-fg hover:underline"
-        >
-          Coba lagi
-        </button>
-      </div>
-    );
-  }
+  if (error) return <ErrorState message={error} />;
 
   if (groups.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm font-medium text-faint">
-          {emptyMessage ?? "Belum ada grup yang ditemukan"}
-        </p>
-        <p className="text-xs text-faint/70 mt-1">Coba ubah filter atau kata pencarian</p>
-      </div>
+      <EmptyState
+        message={emptyMessage ?? "Belum ada grup yang ditemukan"}
+        hint="Coba ubah filter atau kata pencarian"
+      />
     );
   }
 

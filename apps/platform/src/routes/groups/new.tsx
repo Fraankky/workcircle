@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../../modules/auth/hooks";
 import { GroupForm } from "../../modules/groups/components/group-form";
+import { BackLink } from "../../components/ui/back-link";
+import { PageHeader } from "../../components/ui/page-header";
 
 export function GroupNewPage() {
   const { user } = useAuth();
@@ -56,27 +58,9 @@ export function GroupNewPage() {
 
   return (
     <div className="max-w-xl mx-auto space-y-5 p-6">
-      <div>
-        <Link
-          to="/discover"
-          className="inline-flex items-center gap-1 text-xs text-faint hover:text-fg transition-colors mb-4"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          Kembali
-        </Link>
-        <h1 className="text-lg font-bold text-fg">Buat Grup Baru</h1>
-        <p className="text-xs text-muted mt-0.5">
-          Isi detail grup kerjamu dan mulai kumpulkan anggota.
-        </p>
+      <div className="space-y-3">
+        <BackLink to="/discover" />
+        <PageHeader title="Buat Grup Baru" subtitle="Isi detail grup kerjamu dan mulai kumpulkan anggota." />
       </div>
 
       <div className="bg-surface rounded border border-border p-5">

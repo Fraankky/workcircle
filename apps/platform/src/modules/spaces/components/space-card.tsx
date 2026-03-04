@@ -1,18 +1,5 @@
 import type { Space } from "../types";
-
-const WIFI_LABEL: Record<Space["wifi_speed"], string> = {
-  slow: "WiFi Lambat",
-  medium: "WiFi OK",
-  fast: "WiFi Kencang",
-  very_fast: "WiFi Super Cepat",
-};
-
-const NOISE_LABEL: Record<Space["noise_level"], string> = {
-  quiet: "Tenang",
-  medium: "Sedang",
-  buzzy: "Agak Ramai",
-  loud: "Ramai",
-};
+import { WIFI_LABELS, NOISE_LABELS } from "../../../lib/constants";
 
 interface SpaceCardProps {
   space: Space;
@@ -30,10 +17,10 @@ export function SpaceCard({ space }: SpaceCardProps) {
       {/* Badges */}
       <div className="flex flex-wrap gap-1.5">
         <span className="px-2 py-0.5 rounded text-xs font-medium bg-overlay text-muted border border-border">
-          {WIFI_LABEL[space.wifi_speed]}
+          {WIFI_LABELS[space.wifi_speed]}
         </span>
         <span className="px-2 py-0.5 rounded text-xs font-medium bg-overlay text-muted border border-border">
-          {NOISE_LABEL[space.noise_level]}
+          {NOISE_LABELS[space.noise_level]}
         </span>
         {space.has_power && (
           <span className="px-2 py-0.5 rounded text-xs font-medium bg-overlay text-muted border border-border">

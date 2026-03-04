@@ -38,6 +38,20 @@ export const CHAT_TYPE_LABELS: Record<string, string> = {
   discord: "Discord",
 };
 
+export const WIFI_LABELS: Record<string, string> = {
+  slow: "WiFi Lambat",
+  medium: "WiFi Sedang",
+  fast: "WiFi Kencang",
+  very_fast: "WiFi Sangat Cepat",
+};
+
+export const NOISE_LABELS: Record<string, string> = {
+  quiet: "Tenang",
+  medium: "Sedang",
+  buzzy: "Agak Ramai",
+  loud: "Ramai",
+};
+
 export const SCHEDULES = [
   "Setiap Senin",
   "Setiap Selasa",

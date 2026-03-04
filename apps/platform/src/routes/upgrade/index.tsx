@@ -4,6 +4,7 @@ import { PlanCard } from "../../modules/subscriptions/components/plan-card";
 import { useSubscription } from "../../modules/subscriptions/hooks/use-subscription";
 import { useAuth } from "../../modules/auth/hooks";
 import { formatRelative } from "../../lib/utils";
+import { PageHeader } from "../../components/ui/page-header";
 
 export function UpgradePage() {
   const { user } = useAuth();
@@ -39,12 +40,7 @@ export function UpgradePage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-lg font-bold text-fg">Paket & Langganan</h1>
-        <p className="text-xs text-faint mt-0.5">
-          Pilih paket yang sesuai dengan kebutuhanmu
-        </p>
-      </div>
+      <PageHeader title="Paket & Langganan" subtitle="Pilih paket yang sesuai dengan kebutuhanmu" />
 
       {/* Current plan info */}
       {subscription && currentPlan !== "free" && (
