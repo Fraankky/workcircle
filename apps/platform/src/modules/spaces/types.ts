@@ -14,3 +14,17 @@ export interface Space {
   active_groups: number;
   created_at: string;
 }
+
+export interface ActiveGroupBrief {
+  id: string;
+  name: string;
+  category: string;
+  schedule: string;
+  is_open: boolean;
+  color: string;
+}
+
+export interface SpaceDetail extends Omit<Space, "active_groups"> {
+  active_groups_count: number;
+  active_groups: ActiveGroupBrief[];
+}

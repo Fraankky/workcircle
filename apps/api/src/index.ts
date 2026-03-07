@@ -9,6 +9,7 @@ import { authRouter } from "./modules/auth/router.js";
 import { groupsRouter } from "./modules/groups/router.js";
 import { spacesRouter } from "./modules/spaces/router.js";
 import { subscriptionsRouter } from "./modules/subscriptions/router.js";
+import { notificationsRouter } from "./modules/notifications/router.js";
 import type { Context } from "./types.js";
 
 const app = new Hono<Context>();
@@ -25,6 +26,7 @@ app.route("/api/auth", authRouter);
 app.route("/api/groups", groupsRouter);
 app.route("/api/spaces", spacesRouter);
 app.route("/api/subscriptions", subscriptionsRouter);
+app.route("/api/notifications", notificationsRouter);
 
 // Error handler
 app.onError(errorHandler);

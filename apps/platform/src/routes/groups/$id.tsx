@@ -72,7 +72,7 @@ export function GroupDetailPage() {
   };
 
   return (
-    <div className="space-y-5 max-w-2xl mx-auto p-8">
+    <div className="space-y-5 p-6">
       <BackLink to="/discover" />
 
       {/* Header card */}

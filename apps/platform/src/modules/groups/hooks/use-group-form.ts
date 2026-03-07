@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useCreateGroup } from "./use-create-group";
 import { api } from "../../../lib/api-client";
+import { qk } from "../../../lib/query-keys";
 import { CATEGORY_LABELS, SCHEDULES } from "../../../lib/constants";
 
 interface SpaceOption {
@@ -43,14 +45,13 @@ const INITIAL_STATE: GroupFormState = {
 
 export function useGroupForm(onSuccess?: (groupId: string) => void) {
   const [form, setForm] = useState<GroupFormState>(INITIAL_STATE);
-  const [spaces, setSpaces] = useState<SpaceOption[]>([]);
   const { createGroup, isLoading, error } = useCreateGroup();
 
-  useEffect(() => {
-    api.list<SpaceOption>("/api/spaces")
-      .then((r) => setSpaces(r.data))
-      .catch(() => {});
-  }, []);
+  const spacesQuery = useQuery({
+    queryKey: qk.spaces(),
+    queryFn: () => api.list<SpaceOption>("/api/spaces"),
+    staleTime: 1000 * 60 * 5, // spaces change infrequently
+  });
 
   const set = <K extends keyof GroupFormState>(key: K) =>
     (value: GroupFormState[K]) => setForm((prev) => ({ ...prev, [key]: value }));
@@ -75,5 +76,5 @@ export function useGroupForm(onSuccess?: (groupId: string) => void) {
     if (group) onSuccess?.(group.id);
   };
 
-  return { form, set, spaces, isLoading, error, submit };
+  return { form, set, spaces: spacesQuery.data?.data ?? [], isLoading, error, submit };
 }

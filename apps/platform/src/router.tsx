@@ -6,14 +6,16 @@ import { DiscoverPage } from "./routes/discover/index";
 import { GroupDetailPage } from "./routes/groups/$id";
 import { GroupNewPage } from "./routes/groups/new";
 import { SpacesPage } from "./routes/spaces/index";
+import { SpaceDetailPage } from "./routes/spaces/$id";
 import { GroupsPage } from "./routes/groups/index";
 import { UpgradePage } from "./routes/upgrade/index";
 import { ProfilePage } from "./routes/profile/index";
+import { OnboardingPage } from "./routes/onboarding/index";
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({ component: RootLayout });
 
-// ── Auth pages (no sidebar) ───────────────────────────────────────────────────
+// ── Auth / no-sidebar pages ───────────────────────────────────────────────────
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/login",
@@ -24,6 +26,12 @@ const registerRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/register",
   component: RegisterPage,
+});
+
+const onboardingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/onboarding",
+  component: OnboardingPage,
 });
 
 // ── Index redirect ─────────────────────────────────────────────────────────────
@@ -64,6 +72,12 @@ const spacesRoute = createRoute({
   component: SpacesPage,
 });
 
+const spaceDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/spaces/$id",
+  component: SpaceDetailPage,
+});
+
 const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/profile",
@@ -81,11 +95,13 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
   registerRoute,
+  onboardingRoute,
   discoverRoute,
   groupsRoute,
   groupNewRoute,
   groupDetailRoute,
   spacesRoute,
+  spaceDetailRoute,
   profileRoute,
   upgradeRoute,
 ]);

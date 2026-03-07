@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
+import { qk } from "../../../lib/query-keys";
 import type { ListMeta } from "../../../lib/api-client";
 import type { Group } from "../types";
 
@@ -18,42 +19,24 @@ interface UseGroupsResult {
 }
 
 export function useGroups(filters: Filters = {}): UseGroupsResult {
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [meta, setMeta] = useState<ListMeta | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
+  const { category, search, sort } = filters;
 
-  const refetch = useCallback(() => setTick((t) => t + 1), []);
+  const query = useQuery({
+    queryKey: qk.groups({ category, search, sort }),
+    queryFn: () => {
+      const params = new URLSearchParams({ page: "1", limit: "20" });
+      if (category) params.set("category", category);
+      if (search) params.set("search", search);
+      if (sort) params.set("sort", sort);
+      return api.list<Group>(`/api/groups?${params}`);
+    },
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    setIsLoading(true);
-    setError(null);
-
-    const params = new URLSearchParams({ page: "1", limit: "20" });
-    if (filters.category) params.set("category", filters.category);
-    if (filters.search) params.set("search", filters.search);
-    if (filters.sort) params.set("sort", filters.sort);
-
-    api
-      .list<Group>(`/api/groups?${params}`)
-      .then(({ data, meta }) => {
-        if (cancelled) return;
-        setGroups(data);
-        setMeta(meta);
-      })
-      .catch((err: Error) => {
-        if (cancelled) return;
-        setError(err.message ?? "Gagal memuat grup");
-      })
-      .finally(() => {
-        if (!cancelled) setIsLoading(false);
-      });
-
-    return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.category, filters.search, filters.sort, tick]);
-
-  return { groups, meta, isLoading, error, refetch };
+  return {
+    groups: query.data?.data ?? [],
+    meta: query.data?.meta ?? null,
+    isLoading: query.isLoading,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch: query.refetch,
+  };
 }

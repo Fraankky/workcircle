@@ -50,7 +50,7 @@ export function ProfileInfoRow({ user, onEdit }: ProfileInfoRowProps) {
       {user.bio && (
         <p className="text-sm text-muted leading-relaxed">{user.bio}</p>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-2">
         {user.jobTitle && (
           <InfoRow icon="briefcase" label="Jabatan" value={user.jobTitle} />
         )}

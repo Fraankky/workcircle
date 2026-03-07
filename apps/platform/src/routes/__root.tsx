@@ -2,7 +2,7 @@ import { Outlet, useRouterState } from "@tanstack/react-router";
 import { AuthProvider } from "../modules/auth/hooks";
 import { Layout } from "../components/layout";
 
-const AUTH_PATHS = ["/login", "/register"];
+const AUTH_PATHS = ["/login", "/register", "/onboarding"];
 
 export function RootLayout() {
   const { location } = useRouterState();

@@ -1,6 +1,7 @@
 import { prisma } from "../../utils/prisma.js";
 import { ConflictError, ForbiddenError, NotFoundError } from "../../exceptions.js";
 import { recalcIsOpen } from "./service.js";
+import { createNotification } from "../notifications/service.js";
 import type { ListJoinRequestsQuery } from "./join-requests-schema.js";
 
 const REQUEST_INCLUDE = {
@@ -97,6 +98,19 @@ export async function approveJoinRequest(requestId: string) {
   ]);
 
   await recalcIsOpen(req.groupId);
+
+  // Notifikasi ke user yang diapprove
+  const group = await prisma.group.findUnique({ where: { id: req.groupId }, select: { name: true } });
+  if (group) {
+    createNotification({
+      userId: req.userId,
+      type: "join_approved",
+      title: "Permintaanmu diterima!",
+      body: `Kamu berhasil bergabung ke grup ${group.name}`,
+      linkUrl: `/groups/${req.groupId}`,
+    }).catch(() => {});
+  }
+
   return updated;
 }
 
@@ -105,9 +119,23 @@ export async function rejectJoinRequest(requestId: string, rejectionReason?: str
   if (!req) throw new NotFoundError("Permintaan");
   if (req.status !== "pending") throw new ConflictError("Permintaan sudah diproses");
 
-  return prisma.groupJoinRequest.update({
+  const updated = await prisma.groupJoinRequest.update({
     where: { id: requestId },
     data: { status: "rejected", rejectionReason, reviewedAt: new Date() },
     include: REQUEST_INCLUDE,
   });
+
+  // Notifikasi ke user yang direject
+  const group = await prisma.group.findUnique({ where: { id: req.groupId }, select: { name: true } });
+  if (group) {
+    createNotification({
+      userId: req.userId,
+      type: "join_rejected",
+      title: "Permintaanmu tidak diterima",
+      body: `Permintaan bergabung ke grup ${group.name} tidak diterima`,
+      linkUrl: `/discover`,
+    }).catch(() => {});
+  }
+
+  return updated;
 }

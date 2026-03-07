@@ -62,6 +62,13 @@ enum ChatType {
   discord
 }
 
+enum NotifType {
+  join_approved
+  join_rejected
+  new_member
+  group_closed
+}
+
 // ──────────── Models ────────────
 
 model User {
@@ -81,10 +88,11 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  adminGroups  Group[]            @relation("GroupAdmin")
-  memberships  GroupMember[]
-  joinRequests GroupJoinRequest[]
-  subscription Subscription?
+  adminGroups    Group[]            @relation("GroupAdmin")
+  memberships    GroupMember[]
+  joinRequests   GroupJoinRequest[]
+  subscription   Subscription?
+  notifications  Notification[]
 
   @@index([email])
   @@index([googleId])
@@ -199,4 +207,21 @@ model Subscription {
   @@index([userId])
   @@index([status])
   @@map("subscriptions")
+}
+
+model Notification {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @db.Uuid @map("user_id")
+  type      NotifType
+  title     String
+  body      String
+  linkUrl   String?   @map("link_url")
+  isRead    Boolean   @default(false) @map("is_read")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@map("notifications")
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "../modules/auth/hooks";
 import { Avatar } from "./ui/avatar";
+import { NotificationBell } from "./notification-bell";
 
 export function Header() {
   const { user } = useAuth();
@@ -11,6 +12,7 @@ export function Header() {
     <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-overlay backdrop-blur-xl border-b border-border flex items-center justify-between px-4">
       <span className="text-sm font-bold text-fg tracking-tight">WorkCircle</span>
       <div className="flex items-center gap-2">
+        {user && <NotificationBell />}
         {user && <Avatar src={user.avatarUrl} name={user.name} size="xs" />}
         <button
           onClick={() => setMenuOpen((v) => !v)}

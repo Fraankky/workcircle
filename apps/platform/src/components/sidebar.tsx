@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useAuth } from "../modules/auth/hooks";
 import { Avatar } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { NotificationBell } from "./notification-bell";
 import { cn } from "../lib/utils";
 
 const NAV = [
@@ -53,9 +54,10 @@ export function Sidebar() {
 
   return (
     <aside className="hidden md:flex flex-col w-56 h-screen sticky top-0 border-r border-border bg-overlay backdrop-blur-xl">
-      {/* Logo */}
-      <div className="px-6 py-8 border-b border-border">
+      {/* Logo + bell */}
+      <div className="px-6 py-8 border-b border-border flex items-center justify-between">
         <span className="text-xl font-bold text-fg tracking-tight">WorkCircle.</span>
+        <NotificationBell />
       </div>
 
       {/* Nav */}
@@ -81,9 +83,9 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom: upgrade + user */}
-      <div className="px-3 pb-4 space-y-3 border-t border-border pt-3">
+      <div className="px-3 pb-8 space-y-3 border-t border-border pt-3">
         {user.plan === "free" && (
-          <Link to="/upgrade">
+          <Link to="/upgrade" className="pb-4">
             <Button size="sm" className="w-full justify-start gap-2">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -93,7 +95,7 @@ export function Sidebar() {
           </Link>
         )}
 
-        <div className="flex items-center gap-2.5 px-1">
+        <div className="flex items-center gap-2.5 px-1 pt-4">
           <Avatar src={user.avatarUrl} name={user.name} size="sm" />
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-fg truncate">{user.name}</p>

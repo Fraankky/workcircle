@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "../../../lib/api-client";
+import { qk } from "../../../lib/query-keys";
 import type { Group } from "../types";
 
 interface CreateGroupData {
@@ -19,22 +20,23 @@ interface CreateGroupData {
 }
 
 export function useCreateGroup() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  async function createGroup(data: CreateGroupData): Promise<Group> {
-    setIsLoading(true);
-    setError(null);
-    try {
-      return await api.post<Group>("/api/groups", data);
-    } catch (err) {
-      const msg = err instanceof ApiError ? err.message : "Gagal membuat grup";
-      setError(msg);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const mutation = useMutation({
+    mutationFn: (data: CreateGroupData) => api.post<Group>("/api/groups", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: qk.myGroups() });
+    },
+  });
 
-  return { createGroup, isLoading, error };
+  return {
+    createGroup: mutation.mutateAsync,
+    isLoading: mutation.isPending,
+    error: mutation.error instanceof ApiError
+      ? mutation.error.message
+      : mutation.error instanceof Error
+        ? mutation.error.message
+        : null,
+  };
 }

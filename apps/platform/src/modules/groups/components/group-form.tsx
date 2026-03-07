@@ -45,7 +45,7 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
         />
       </Field>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4">
         <Field label="Kategori *">
           <select
             value={form.category}
@@ -99,7 +99,7 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
         </select>
       </Field>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4">
         <Field label="Waktu Mulai *">
           <input
             type="time"
@@ -134,7 +134,7 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
         </div>
       </Field>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4">
         <Field label="Link Grup Chat">
           <input
             type="url"

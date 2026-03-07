@@ -73,7 +73,7 @@ export function ProfileEditForm({ form, onChange, error, busy, onSave, onCancel 
       <div className="space-y-3">
         <Field label="Nama" value={form.name} onChange={set("name")} placeholder="Nama lengkap" />
         <Field label="Bio" value={form.bio} onChange={set("bio")} placeholder="Ceritakan sedikit tentang kamu" multiline />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 max-md:grid-cols-1 gap-6">
           <Field label="Jabatan" value={form.jobTitle} onChange={set("jobTitle")} placeholder="Software Engineer" />
           <Field label="Perusahaan" value={form.company} onChange={set("company")} placeholder="PT. Contoh Indonesia" />
         </div>

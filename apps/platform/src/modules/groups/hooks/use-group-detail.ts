@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useQueries } from "@tanstack/react-query";
 import { api, ApiError } from "../../../lib/api-client";
+import { qk } from "../../../lib/query-keys";
 import { useAuth } from "../../auth/hooks";
 import type { Group, JoinRequest } from "../types";
 
@@ -15,45 +16,33 @@ interface GroupDetailState {
 
 export function useGroupDetail(id: string): GroupDetailState {
   const { user } = useAuth();
-  const [group, setGroup] = useState<Group | null>(null);
-  const [myRequest, setMyRequest] = useState<JoinRequest | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const [groupResult, requestResult] = await Promise.allSettled([
-        api.get<Group>(`/api/groups/${id}`),
-        api.get<JoinRequest>(`/api/groups/${id}/join-requests/me`),
-      ]);
+  const [groupQuery, requestQuery] = useQueries({
+    queries: [
+      {
+        queryKey: qk.group(id),
+        queryFn: () => api.get<Group>(`/api/groups/${id}`),
+      },
+      {
+        queryKey: qk.groupRequest(id),
+        queryFn: async () => {
+          try {
+            return await api.get<JoinRequest>(`/api/groups/${id}/join-requests/me`);
+          } catch (e) {
+            if (e instanceof ApiError && e.status === 404) return null;
+            throw e;
+          }
+        },
+        retry: (failureCount: number, error: unknown) => {
+          if (error instanceof ApiError && error.status === 404) return false;
+          return failureCount < 1;
+        },
+      },
+    ],
+  });
 
-      if (groupResult.status === "fulfilled") {
-        setGroup(groupResult.value);
-      } else {
-        throw groupResult.reason;
-      }
-
-      if (requestResult.status === "fulfilled") {
-        setMyRequest(requestResult.value);
-      } else if (
-        requestResult.reason instanceof ApiError &&
-        requestResult.reason.status === 404
-      ) {
-        setMyRequest(null);
-      }
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Gagal memuat grup");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
+  const group = groupQuery.data ?? null;
+  const myRequest = requestQuery.data ?? null;
   const isAdmin = !!group && !!user && group.admin.id === user.id;
   const isMember =
     !!group &&
@@ -61,5 +50,13 @@ export function useGroupDetail(id: string): GroupDetailState {
     (group.admin.id === user.id ||
       (group.members?.some((m) => m.user.id === user.id) ?? false));
 
-  return { group, myRequest, isLoading, error, isAdmin, isMember, refetch: load };
+  return {
+    group,
+    myRequest,
+    isLoading: groupQuery.isLoading,
+    error: groupQuery.error instanceof Error ? groupQuery.error.message : null,
+    isAdmin,
+    isMember,
+    refetch: groupQuery.refetch,
+  };
 }

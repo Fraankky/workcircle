@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { api, ApiError } from "../../../lib/api-client";
+import { qk } from "../../../lib/query-keys";
 import type { Space } from "../types";
 
 interface UseSpacesOptions {
@@ -7,29 +8,24 @@ interface UseSpacesOptions {
 }
 
 export function useSpaces({ area }: UseSpacesOptions = {}) {
-  const [spaces, setSpaces] = useState<Space[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
+  const query = useQuery({
+    queryKey: qk.spaces(area),
+    queryFn: () => {
       const params = new URLSearchParams();
       if (area) params.set("area", area);
       const path = `/api/spaces${area ? `?${params}` : ""}`;
-      const res = await api.list<Space>(path);
-      setSpaces(res.data);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Gagal memuat spaces");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [area]);
+      return api.list<Space>(path);
+    },
+  });
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  return { spaces, isLoading, error, refetch: load };
+  return {
+    spaces: query.data?.data ?? [],
+    isLoading: query.isLoading,
+    error: query.error instanceof ApiError
+      ? query.error.message
+      : query.error instanceof Error
+        ? query.error.message
+        : null,
+    refetch: query.refetch,
+  };
 }

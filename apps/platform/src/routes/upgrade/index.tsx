@@ -39,7 +39,7 @@ export function UpgradePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 py-12">
       <PageHeader title="Paket & Langganan" subtitle="Pilih paket yang sesuai dengan kebutuhanmu" />
 
       {/* Current plan info */}

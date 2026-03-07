@@ -30,7 +30,7 @@ export function RegisterForm() {
     setLoading(true);
     try {
       await register(form);
-      navigate({ to: "/discover" });
+      navigate({ to: "/onboarding" });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Registrasi gagal, coba lagi");
     } finally {

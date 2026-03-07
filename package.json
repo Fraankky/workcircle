@@ -14,5 +14,9 @@
   },
   "devDependencies": {
     "turbo": "^2.8.12"
+  },
+  "dependencies": {
+    "@googlemaps/markerclusterer": "^2.6.2",
+    "@vis.gl/react-google-maps": "^1.7.1"
   }
 }

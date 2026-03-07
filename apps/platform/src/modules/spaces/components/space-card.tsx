@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { Space } from "../types";
 import { WIFI_LABELS, NOISE_LABELS } from "../../../lib/constants";
 
@@ -7,7 +8,11 @@ interface SpaceCardProps {
 
 export function SpaceCard({ space }: SpaceCardProps) {
   return (
-    <div className="bg-surface rounded border border-border hover:border-overlay transition-all duration-150 p-4 space-y-3">
+    <Link
+      to="/spaces/$id"
+      params={{ id: space.id }}
+      className="block bg-surface rounded border border-border hover:border-overlay transition-all duration-150 p-4 space-y-3"
+    >
       {/* Header */}
       <div>
         <h3 className="text-sm font-semibold text-fg line-clamp-1">{space.name}</h3>
@@ -56,7 +61,7 @@ export function SpaceCard({ space }: SpaceCardProps) {
       {space.address && (
         <p className="text-xs text-faint truncate">{space.address}</p>
       )}
-    </div>
+    </Link>
   );
 }
 

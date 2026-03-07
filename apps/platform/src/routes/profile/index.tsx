@@ -23,7 +23,7 @@ export function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5 p-8">
+    <div className="space-y-5 p-8 max-w-3xl mx-auto">
       {/* Profile card */}
       <div className="bg-surface rounded border border-border overflow-hidden">
         <div className="h-0.5 w-full bg-accent" />

@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "../../../lib/api-client";
+import { qk } from "../../../lib/query-keys";
 import type { JoinRequest } from "../types";
 
 interface JoinRequestsState {
@@ -12,43 +13,43 @@ interface JoinRequestsState {
 }
 
 export function useJoinRequests(groupId: string): JoinRequestsState {
-  const [requests, setRequests] = useState<JoinRequest[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const load = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const res = await api.list<JoinRequest>(
-        `/api/groups/${groupId}/join-requests`,
-      );
-      setRequests(res.data);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Gagal memuat waitlist");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [groupId]);
+  const query = useQuery({
+    queryKey: qk.joinRequests(groupId),
+    queryFn: () => api.list<JoinRequest>(`/api/groups/${groupId}/join-requests`),
+  });
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const approve = async (requestId: string) => {
-    await api.patch(`/api/groups/${groupId}/join-requests/${requestId}`, {
-      action: "approve",
-    });
-    load();
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: qk.joinRequests(groupId) });
+    queryClient.invalidateQueries({ queryKey: qk.group(groupId) });
   };
 
-  const reject = async (requestId: string, reason?: string) => {
-    await api.patch(`/api/groups/${groupId}/join-requests/${requestId}`, {
-      action: "reject",
-      rejection_reason: reason,
-    });
-    load();
-  };
+  const approveMutation = useMutation({
+    mutationFn: (requestId: string) =>
+      api.patch(`/api/groups/${groupId}/join-requests/${requestId}`, { action: "approve" }),
+    onSuccess: invalidate,
+  });
 
-  return { requests, isLoading, error, approve, reject, refetch: load };
+  const rejectMutation = useMutation({
+    mutationFn: ({ requestId, reason }: { requestId: string; reason?: string }) =>
+      api.patch(`/api/groups/${groupId}/join-requests/${requestId}`, {
+        action: "reject",
+        rejection_reason: reason,
+      }),
+    onSuccess: invalidate,
+  });
+
+  return {
+    requests: query.data?.data ?? [],
+    isLoading: query.isLoading,
+    error: query.error instanceof ApiError
+      ? query.error.message
+      : query.error instanceof Error
+        ? query.error.message
+        : null,
+    approve: (requestId) => approveMutation.mutateAsync(requestId),
+    reject: (requestId, reason) => rejectMutation.mutateAsync({ requestId, reason }),
+    refetch: query.refetch,
+  };
 }
