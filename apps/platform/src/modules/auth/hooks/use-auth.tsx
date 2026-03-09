@@ -19,6 +19,7 @@ export interface User {
   location: string | null;
   plan: "free" | "pro" | "team";
   profileComplete: boolean;
+  emailVerified: boolean;
   createdAt: string;
 }
 

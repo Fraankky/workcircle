@@ -23,3 +23,12 @@ export const updateProfileSchema = z.object({
   location: z.string().optional(),
   avatarUrl: z.string().url().optional(),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1),
+  newPassword: z.string().min(8),
+});

@@ -13,8 +13,12 @@ export function GroupCard({ group }: GroupCardProps) {
   return (
     <Link to="/groups/$id" params={{ id: group.id }}>
       <div className="bg-surface rounded border border-border hover:border-overlay transition-all duration-150 overflow-hidden cursor-pointer">
-        {/* Color accent bar */}
-        <div className="h-0.5 w-full" style={{ backgroundColor: group.color }} />
+        {/* Cover image or color accent bar */}
+        {group.cover_url ? (
+          <img src={group.cover_url} alt={group.name} className="w-full h-20 object-cover" />
+        ) : (
+          <div className="h-0.5 w-full" style={{ backgroundColor: group.color }} />
+        )}
 
         <div className="p-4 space-y-3">
           {/* Header row */}
@@ -64,7 +68,7 @@ export function GroupCard({ group }: GroupCardProps) {
           <div className="flex items-center justify-between pt-2 border-t border-border-dim">
             <div className="flex items-center gap-1.5">
               <Avatar src={group.admin.avatar_url} name={group.admin.name} size="xs" />
-              <span className="text-xs text-muted truncate max-w-[100px]">
+              <span className="text-xs text-muted truncate max-w-25">
                 {group.admin.name}
               </span>
             </div>

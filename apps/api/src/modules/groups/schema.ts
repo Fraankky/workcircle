@@ -15,6 +15,7 @@ export const createGroupSchema = z.object({
   chatType: z.enum(["whatsapp", "telegram", "discord"]).optional(),
   requireApproval: z.boolean().default(true),
   color: z.string().default("#635BFF"),
+  coverUrl: z.string().url().optional(),
 });
 
 export const updateGroupSchema = z.object({
@@ -32,6 +33,8 @@ export const updateGroupSchema = z.object({
   chatType: z.enum(["whatsapp", "telegram", "discord"]).nullish(),
   requireApproval: z.boolean().optional(),
   color: z.string().optional(),
+  coverUrl: z.string().url().nullish(),
+  isOpen: z.boolean().optional(),
 });
 
 export const listGroupsQuerySchema = z.object({

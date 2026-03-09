@@ -76,6 +76,7 @@ export async function createGroup(data: CreateGroupInput, adminId: string, admin
       requireApproval: data.requireApproval,
       chatLink: data.chatLink,
       chatType: data.chatType,
+      coverUrl: data.coverUrl,
     },
   });
 

@@ -1,20 +1,12 @@
-import type { LatLngExpression } from "leaflet";
-import {
-  Map,
-  MapAttribution,
-  MapMarker,
-  MapMarkerClusterGroup,
-  MapPopup,
-  MapTileLayer,
-  MapTooltip,
-  MapZoomControl,
-} from "../../../components/ui/map";
-import { cn } from "../../../lib/utils";
+import { useState, useCallback } from "react";
+import Map, { Marker, Popup, NavigationControl } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { WIFI_LABELS } from "../../../lib/constants";
 import type { Space } from "../types";
 
-// Jakarta sebagai default center
-const JAKARTA_CENTER: LatLngExpression = [-6.2088, 106.8456];
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string;
+const JAKARTA_CENTER = { longitude: 106.8456, latitude: -6.2088 };
+const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
 
 interface SpaceMapProps {
   spaces: Space[];
@@ -23,157 +15,161 @@ interface SpaceMapProps {
   className?: string;
 }
 
-// Inline styles required — this HTML is injected into Leaflet's divIcon
-// (outside React tree, so Tailwind classes won't apply)
-function SpaceMarkerIcon({ isSelected }: { isSelected?: boolean }) {
+function SpaceMarker({
+  space,
+  isSelected,
+  onClick,
+}: {
+  space: Space;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
   const size = isSelected ? 32 : 24;
   const dotSize = isSelected ? 10 : 8;
+
   return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        background: "#FFFFFF",
-        border: "2.5px solid #07070A",
-        boxShadow: isSelected
-          ? "0 0 0 3px rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.5)"
-          : "0 2px 4px rgba(0,0,0,0.4)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <Marker longitude={space.longitude!} latitude={space.latitude!} anchor="center" onClick={(e) => { e.originalEvent.stopPropagation(); onClick(); }}>
       <div
         style={{
-          width: dotSize,
-          height: dotSize,
+          width: size,
+          height: size,
           borderRadius: "50%",
-          background: "#07070A",
+          background: "#FFFFFF",
+          border: "2.5px solid #07070A",
+          boxShadow: isSelected
+            ? "0 0 0 3px rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.5)"
+            : "0 2px 4px rgba(0,0,0,0.4)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "all 0.15s ease",
         }}
-      />
-    </div>
+      >
+        <div
+          style={{
+            width: dotSize,
+            height: dotSize,
+            borderRadius: "50%",
+            background: "#07070A",
+          }}
+        />
+      </div>
+    </Marker>
   );
 }
 
 function SpacePopupContent({ space }: { space: Space }) {
   return (
-    <div style={{ width: 220, overflow: "hidden", borderRadius: 6, background: "rgba(255,255,255,0.06)", backdropFilter: "blur(14px)", border: "1px solid rgba(255,255,255,0.08)", fontFamily: "inherit" }}>
-      {/* Header */}
-      <div style={{ background: "rgba(255,255,255,0.08)", borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "8px 12px" }}>
-        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#FFFFFF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{space.name}</p>
-        <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.50)", marginTop: 2 }}>{space.area}</p>
+    <div style={{ minWidth: 200, fontFamily: "inherit" }}>
+      <div style={{ borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 8, marginBottom: 8 }}>
+        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#FFFFFF", lineHeight: 1.3 }}>{space.name}</p>
+        <p style={{ margin: "2px 0 0", fontSize: 11, color: "rgba(255,255,255,0.50)" }}>{space.area}</p>
       </div>
 
-      {/* Body */}
-      <div style={{ padding: "8px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
-        {/* Rating + seats */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 11, color: "rgba(255,255,255,0.50)" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 4, color: "rgba(255,210,100,0.80)", fontWeight: 600 }}>
-            ★ {space.rating.toFixed(1)}
-          </span>
-          {space.seat_count && (
-            <span>{space.seat_count} kursi</span>
-          )}
-          {space.active_groups > 0 && (
-            <span style={{ color: "rgba(255,255,255,0.70)" }}>{space.active_groups} grup</span>
-          )}
-        </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 11, color: "rgba(255,255,255,0.50)", marginBottom: 6 }}>
+        <span style={{ color: "rgba(255,210,100,0.90)", fontWeight: 600 }}>★ {space.rating.toFixed(1)}</span>
+        {space.seat_count && <span>{space.seat_count} kursi</span>}
+        {space.active_groups > 0 && (
+          <span style={{ color: "rgba(255,255,255,0.70)" }}>{space.active_groups} grup</span>
+        )}
+      </div>
 
-        {/* WiFi */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+        <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          {WIFI_LABELS[space.wifi_speed]}
+        </span>
+        {space.has_power && (
           <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            {WIFI_LABELS[space.wifi_speed]}
+            ⚡ Power
           </span>
-          {space.has_power && (
-            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.50)", border: "1px solid rgba(255,255,255,0.08)" }}>
-              ⚡ Power
-            </span>
-          )}
-        </div>
-
-        {/* Price */}
+        )}
         {space.price_range && (
-          <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.25)" }}>{space.price_range}</p>
+          <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.25)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            {space.price_range}
+          </span>
         )}
       </div>
     </div>
   );
 }
 
-export function SpaceMap({
-  spaces,
-  selectedSpaceId,
-  onSpaceSelect,
-  className,
-}: SpaceMapProps) {
-  const spacesWithCoords = spaces.filter(
-    (s) => s.latitude != null && s.longitude != null
-  );
+export function SpaceMap({ spaces, selectedSpaceId, onSpaceSelect, className }: SpaceMapProps) {
+  const spacesWithCoords = spaces.filter((s) => s.latitude != null && s.longitude != null);
+  const [popupSpaceId, setPopupSpaceId] = useState<string | null>(null);
 
-  // Kalau ada spaces, center ke rata-rata koordinat; fallback Jakarta
-  const center: LatLngExpression =
+  const center =
     spacesWithCoords.length > 0
-      ? ([
-          spacesWithCoords.reduce((sum, s) => sum + s.latitude!, 0) /
-            spacesWithCoords.length,
-          spacesWithCoords.reduce((sum, s) => sum + s.longitude!, 0) /
-            spacesWithCoords.length,
-        ] as LatLngExpression)
+      ? {
+          longitude: spacesWithCoords.reduce((s, sp) => s + sp.longitude!, 0) / spacesWithCoords.length,
+          latitude: spacesWithCoords.reduce((s, sp) => s + sp.latitude!, 0) / spacesWithCoords.length,
+        }
       : JAKARTA_CENTER;
 
+  const handleMarkerClick = useCallback(
+    (id: string) => {
+      setPopupSpaceId(id);
+      onSpaceSelect?.(id);
+    },
+    [onSpaceSelect],
+  );
+
+  const popupSpace = spacesWithCoords.find((s) => s.id === popupSpaceId);
+
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div className={`relative h-full w-full flex flex-col items-center justify-center gap-2 rounded bg-surface ${className ?? ""}`}>
+        <p className="text-xs text-faint">Mapbox token tidak ditemukan</p>
+      </div>
+    );
+  }
+
+  if (spacesWithCoords.length === 0) {
+    return (
+      <div className={`relative h-full w-full flex flex-col items-center justify-center gap-2 rounded bg-surface ${className ?? ""}`}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-border">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+        <p className="text-xs font-medium text-faint">Tidak ada lokasi tersedia</p>
+      </div>
+    );
+  }
+
   return (
-    <div className={cn("relative h-full w-full", className)}>
-      <Map center={center} zoom={12}>
-        <MapTileLayer variant="dark" />
-        <MapZoomControl />
-        <MapAttribution />
+    <div className={`relative h-full w-full ${className ?? ""}`}>
+      <Map
+        mapboxAccessToken={MAPBOX_TOKEN}
+        initialViewState={{ ...center, zoom: 12 }}
+        style={{ width: "100%", height: "100%" }}
+        mapStyle={MAP_STYLE}
+        onClick={() => setPopupSpaceId(null)}
+      >
+        <NavigationControl position="bottom-right" showCompass={false} />
 
-        <MapMarkerClusterGroup>
-          {spacesWithCoords.map((space) => {
-            const position: LatLngExpression = [space.latitude!, space.longitude!];
-            const isSelected = space.id === selectedSpaceId;
+        {spacesWithCoords.map((space) => (
+          <SpaceMarker
+            key={space.id}
+            space={space}
+            isSelected={space.id === selectedSpaceId || space.id === popupSpaceId}
+            onClick={() => handleMarkerClick(space.id)}
+          />
+        ))}
 
-            return (
-              <MapMarker
-                key={space.id}
-                position={position}
-                icon={<SpaceMarkerIcon isSelected={isSelected} />}
-                iconAnchor={isSelected ? [16, 16] : [12, 12]}
-                eventHandlers={{
-                  click: () => onSpaceSelect?.(space.id),
-                }}
-              >
-                <MapTooltip>{space.name}</MapTooltip>
-                <MapPopup>
-                  <SpacePopupContent space={space} />
-                </MapPopup>
-              </MapMarker>
-            );
-          })}
-        </MapMarkerClusterGroup>
-      </Map>
-
-      {/* Fallback: kalau tidak ada space dengan koordinat */}
-      {spacesWithCoords.length === 0 && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded bg-surface">
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="text-border"
+        {popupSpace && (
+          <Popup
+            longitude={popupSpace.longitude!}
+            latitude={popupSpace.latitude!}
+            anchor="bottom"
+            offset={20}
+            closeButton={false}
+            onClose={() => setPopupSpaceId(null)}
+            style={{ padding: 0 }}
           >
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          <p className="text-xs font-medium text-faint">
-            Tidak ada lokasi tersedia
-          </p>
-        </div>
-      )}
+            <SpacePopupContent space={popupSpace} />
+          </Popup>
+        )}
+      </Map>
     </div>
   );
 }

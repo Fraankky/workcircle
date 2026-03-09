@@ -2,6 +2,9 @@ import { createRouter, createRoute, createRootRoute, redirect } from "@tanstack/
 import { RootLayout } from "./routes/__root";
 import { LoginPage } from "./routes/login";
 import { RegisterPage } from "./routes/register";
+import { ForgotPasswordPage } from "./routes/forgot-password";
+import { ResetPasswordPage } from "./routes/reset-password";
+import { VerifyEmailPage } from "./routes/verify-email";
 import { DiscoverPage } from "./routes/discover/index";
 import { GroupDetailPage } from "./routes/groups/$id";
 import { GroupNewPage } from "./routes/groups/new";
@@ -32,6 +35,24 @@ const onboardingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/onboarding",
   component: OnboardingPage,
+});
+
+const forgotPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/forgot-password",
+  component: ForgotPasswordPage,
+});
+
+const resetPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/reset-password",
+  component: ResetPasswordPage,
+});
+
+const verifyEmailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/verify-email",
+  component: VerifyEmailPage,
 });
 
 // ── Index redirect ─────────────────────────────────────────────────────────────
@@ -96,6 +117,9 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
   onboardingRoute,
+  forgotPasswordRoute,
+  resetPasswordRoute,
+  verifyEmailRoute,
   discoverRoute,
   groupsRoute,
   groupNewRoute,

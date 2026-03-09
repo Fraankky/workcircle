@@ -1,8 +1,10 @@
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 import { prisma } from "../../utils/prisma.js";
 import {
   ConflictError,
   NotFoundError,
+  ValidationError,
 } from "../../exceptions.js";
 
 export const USER_SELECT = {
@@ -16,6 +18,7 @@ export const USER_SELECT = {
   location: true,
   plan: true,
   profileComplete: true,
+  emailVerified: true,
   createdAt: true,
 } as const;
 
@@ -110,4 +113,75 @@ export async function findOrCreateGoogleUser(data: {
     },
     select: USER_SELECT,
   });
+}
+
+// ── Email verification ────────────────────────────────────────────────────────
+
+export async function createEmailVerificationToken(userId: string): Promise<string> {
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+
+  // Delete any existing tokens for this user
+  await prisma.emailVerification.deleteMany({ where: { userId } });
+
+  await prisma.emailVerification.create({
+    data: { userId, token, expiresAt },
+  });
+
+  return token;
+}
+
+export async function verifyEmailToken(token: string) {
+  const record = await prisma.emailVerification.findUnique({ where: { token } });
+
+  if (!record) throw new ValidationError("Token tidak valid");
+  if (record.expiresAt < new Date()) throw new ValidationError("Token sudah kadaluarsa");
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: record.userId },
+      data: { emailVerified: true },
+    }),
+    prisma.emailVerification.delete({ where: { token } }),
+  ]);
+}
+
+// ── Password reset ─────────────────────────────────────────────────────────────
+
+export async function createPasswordResetToken(email: string): Promise<{ token: string; name: string } | null> {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) return null; // Don't reveal whether email exists
+
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1h
+
+  // Delete existing reset tokens for this user
+  await prisma.passwordReset.deleteMany({ where: { userId: user.id } });
+
+  await prisma.passwordReset.create({
+    data: { userId: user.id, token, expiresAt },
+  });
+
+  return { token, name: user.name };
+}
+
+export async function resetPassword(token: string, newPassword: string) {
+  const record = await prisma.passwordReset.findUnique({ where: { token } });
+
+  if (!record) throw new ValidationError("Token tidak valid");
+  if (record.expiresAt < new Date()) throw new ValidationError("Token sudah kadaluarsa");
+  if (record.usedAt) throw new ValidationError("Token sudah digunakan");
+
+  const hashed = await bcrypt.hash(newPassword, 12);
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: record.userId },
+      data: { password: hashed },
+    }),
+    prisma.passwordReset.update({
+      where: { token },
+      data: { usedAt: new Date() },
+    }),
+  ]);
 }

@@ -56,6 +56,12 @@ export function LoginForm() {
       </Button>
 
       <p className="text-center text-sm text-faint">
+        <Link to="/forgot-password" className="text-fg hover:underline">
+          Lupa password?
+        </Link>
+      </p>
+
+      <p className="text-center text-sm text-faint">
         Belum punya akun?{" "}
         <Link to="/register" className="text-fg font-medium hover:underline">
           Daftar

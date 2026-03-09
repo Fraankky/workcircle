@@ -5,7 +5,7 @@ import { useProfileEdit } from "../../modules/profile/hooks/use-profile-edit";
 import { ProfileStats } from "../../modules/profile/components/profile-stats";
 import { ProfileInfoRow } from "../../modules/profile/components/profile-info-row";
 import { ProfileEditForm } from "../../modules/profile/components/profile-edit-form";
-import { Avatar } from "../../components/ui/avatar";
+import { AvatarUpload } from "../../components/ui/avatar-upload";
 import { Badge } from "../../components/ui/badge";
 
 const PLAN_LABEL: Record<string, string> = {
@@ -15,7 +15,11 @@ const PLAN_LABEL: Record<string, string> = {
 };
 
 export function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
+
+  async function handleAvatarUploaded(publicUrl: string) {
+    await updateProfile({ avatarUrl: publicUrl });
+  }
   const { admin_groups, member_groups } = useMyGroups();
   const { editing, busy, error, form, setForm, startEdit, cancelEdit, save, handleLogout } =
     useProfileEdit();
@@ -30,7 +34,7 @@ export function ProfilePage() {
         <div className="p-6 space-y-5">
           {/* Avatar + name row */}
           <div className="flex items-start gap-4">
-            <Avatar src={user.avatarUrl} name={user.name} size="lg" />
+            <AvatarUpload src={user.avatarUrl} name={user.name} size="lg" onUploaded={handleAvatarUploaded} />
             <div className="flex-1 min-w-0 space-y-1">
               <h1 className="text-lg font-bold text-fg leading-tight">{user.name}</h1>
               <p className="text-xs text-muted">{user.email}</p>

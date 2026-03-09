@@ -30,6 +30,7 @@ export interface Group {
   require_approval: boolean;
   chat_link?: string | null;
   chat_type?: string | null;
+  cover_url?: string | null;
   pending_count?: number;
   created_at: string;
   updated_at?: string;

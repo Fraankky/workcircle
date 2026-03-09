@@ -1,6 +1,8 @@
+import { useState, useRef } from "react";
 import { useGroupForm } from "../hooks/use-group-form";
 import { TagInput } from "./tag-input";
 import { CATEGORY_LABELS, SCHEDULES, VIBES, CHAT_TYPE_LABELS } from "../../../lib/constants";
+import { uploadImage } from "../../../lib/upload";
 
 interface GroupFormProps {
   onSuccess: (groupId: string) => void;
@@ -20,6 +22,25 @@ const inputCls =
 
 export function GroupForm({ onSuccess }: GroupFormProps) {
   const { form, set, spaces, isLoading, error, submit } = useGroupForm(onSuccess);
+  const [coverUploading, setCoverUploading] = useState(false);
+  const [coverError, setCoverError] = useState<string | null>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCoverError(null);
+    setCoverUploading(true);
+    try {
+      const url = await uploadImage(file, "group-cover");
+      set("coverUrl")(url);
+    } catch {
+      setCoverError("Upload gagal, coba lagi");
+    } finally {
+      setCoverUploading(false);
+      if (coverInputRef.current) coverInputRef.current.value = "";
+    }
+  }
 
   return (
     <form onSubmit={submit} className="space-y-5">
@@ -180,6 +201,40 @@ export function GroupForm({ onSuccess }: GroupFormProps) {
           </p>
         </div>
       </label>
+
+      <Field label="Cover Foto (opsional)">
+        <input ref={coverInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleCoverFile} />
+        {form.coverUrl ? (
+          <div className="relative rounded overflow-hidden border border-border">
+            <img src={form.coverUrl} alt="Cover" className="w-full h-28 object-cover" />
+            <button
+              type="button"
+              onClick={() => set("coverUrl")("")}
+              className="absolute top-2 right-2 bg-black/60 text-fg text-[10px] px-2 py-1 rounded hover:bg-black/80"
+            >
+              Hapus
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            disabled={coverUploading}
+            onClick={() => coverInputRef.current?.click()}
+            className="w-full h-24 border border-dashed border-border rounded flex flex-col items-center justify-center gap-1 text-faint hover:border-fg/30 hover:text-muted transition-colors disabled:opacity-50"
+          >
+            {coverUploading ? (
+              <span className="text-xs">Mengupload...</span>
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span className="text-xs">Klik untuk upload gambar cover</span>
+                <span className="text-[10px]">1200×400 · JPEG / PNG / WebP</span>
+              </>
+            )}
+          </button>
+        )}
+        {coverError && <p className="text-[10px] text-danger">{coverError}</p>}
+      </Field>
 
       {error && <p className="text-xs text-danger">{error}</p>}
 

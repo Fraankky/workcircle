@@ -45,6 +45,7 @@ export function formatGroupBrief(g: GroupBrief) {
     tags: g.tags,
     color: g.color,
     require_approval: g.requireApproval,
+    cover_url: g.coverUrl,
     created_at: g.createdAt.toISOString(),
     admin: {
       id: g.admin.id,
@@ -74,6 +75,7 @@ export function formatGroupFull(g: GroupFull) {
     require_approval: g.requireApproval,
     chat_link: g.chatLink,
     chat_type: g.chatType,
+    cover_url: g.coverUrl,
     pending_count: g._count.joinRequests,
     created_at: g.createdAt.toISOString(),
     updated_at: g.updatedAt.toISOString(),

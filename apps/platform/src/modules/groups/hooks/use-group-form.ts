@@ -25,6 +25,7 @@ interface GroupFormState {
   chatLink: string;
   chatType: string;
   requireApproval: boolean;
+  coverUrl: string;
 }
 
 const INITIAL_STATE: GroupFormState = {
@@ -41,6 +42,7 @@ const INITIAL_STATE: GroupFormState = {
   chatLink: "",
   chatType: "",
   requireApproval: true,
+  coverUrl: "",
 };
 
 export function useGroupForm(onSuccess?: (groupId: string) => void) {
@@ -72,6 +74,7 @@ export function useGroupForm(onSuccess?: (groupId: string) => void) {
       chatLink: form.chatLink || undefined,
       chatType: form.chatType || undefined,
       requireApproval: form.requireApproval,
+      coverUrl: form.coverUrl || undefined,
     }).catch(() => null);
     if (group) onSuccess?.(group.id);
   };

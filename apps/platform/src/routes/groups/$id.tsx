@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, Link } from "@tanstack/react-router";
+import { uploadImage } from "../../lib/upload";
+import { api } from "../../lib/api-client";
+import { useQueryClient } from "@tanstack/react-query";
+import { qk } from "../../lib/query-keys";
 import { BackLink } from "../../components/ui/back-link";
 import { useGroupDetail } from "../../modules/groups/hooks";
 import { useGroupActions } from "../../modules/groups/hooks/use-group-actions";
@@ -11,6 +15,7 @@ import { Badge } from "../../components/ui/badge";
 import { Modal } from "../../components/ui/modal";
 import { GroupDetailSkeleton } from "../../components/ui/skeleton";
 import { ActionButton } from "../../modules/groups/components/action-button";
+import { GroupAdminPanel } from "../../modules/groups/components/group-admin-panel";
 import { CATEGORY_LABELS } from "../../lib/constants";
 
 type Tab = "info" | "members" | "waitlist";
@@ -23,6 +28,25 @@ export function GroupDetailPage() {
   const [tab, setTab] = useState<Tab>("info");
   const [joinOpen, setJoinOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [coverUploading, setCoverUploading] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
+
+  async function handleCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCoverUploading(true);
+    try {
+      const publicUrl = await uploadImage(file, "group-cover");
+      await api.patch(`/api/groups/${id}`, { coverUrl: publicUrl });
+      queryClient.invalidateQueries({ queryKey: qk.group(id) });
+    } catch {
+      alert("Upload cover gagal");
+    } finally {
+      setCoverUploading(false);
+      if (coverInputRef.current) coverInputRef.current.value = "";
+    }
+  }
 
   if (isLoading) return <GroupDetailSkeleton />;
   if (error || !group) {
@@ -77,7 +101,38 @@ export function GroupDetailPage() {
 
       {/* Header card */}
       <div className="bg-surface rounded border border-border overflow-hidden">
-        <div className="h-0.5 w-full" style={{ backgroundColor: group.color }} />
+        {group.cover_url ? (
+          <div className="relative">
+            <img src={group.cover_url} alt={group.name} className="w-full h-32 object-cover" />
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => coverInputRef.current?.click()}
+                disabled={coverUploading}
+                className="absolute top-2 right-2 bg-black/60 text-fg text-[10px] px-2 py-1 rounded hover:bg-black/80 disabled:opacity-50"
+              >
+                {coverUploading ? "Upload..." : "Ganti Cover"}
+              </button>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="h-0.5 w-full" style={{ backgroundColor: group.color }} />
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => coverInputRef.current?.click()}
+                disabled={coverUploading}
+                className="w-full text-[10px] text-faint py-1.5 hover:text-muted hover:bg-overlay transition-colors disabled:opacity-50"
+              >
+                {coverUploading ? "Mengupload..." : "+ Tambah Cover Foto"}
+              </button>
+            )}
+          </>
+        )}
+        {isAdmin && (
+          <input ref={coverInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleCoverFile} />
+        )}
         <div className="p-5 space-y-3">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1.5 min-w-0">
@@ -133,6 +188,9 @@ export function GroupDetailPage() {
         <GroupMembersTab group={group} isAdmin={isAdmin} onRefetch={refetch} />
       )}
       {tab === "waitlist" && isAdmin && <GroupWaitlistTab groupId={id} />}
+
+      {/* Admin panel */}
+      {isAdmin && <GroupAdminPanel group={group} groupId={id} onRefetch={refetch} />}
 
       {/* Join modal */}
       <Modal open={joinOpen} onClose={() => setJoinOpen(false)} title="Bergabung ke Grup">
