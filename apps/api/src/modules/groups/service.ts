@@ -2,7 +2,7 @@ import { prisma } from "../../utils/prisma.js";
 import { ForbiddenError, NotFoundError } from "../../exceptions.js";
 import type { CreateGroupInput, UpdateGroupInput, ListGroupsQuery } from "./schema.js";
 
-const ADMIN_SELECT = { select: { id: true, name: true, avatarUrl: true, jobTitle: true, company: true } } as const;
+const ADMIN_SELECT = { select: { id: true, name: true, avatarUrl: true, jobTitle: true, company: true, bio: true } } as const;
 const SPACE_BRIEF_SELECT = { select: { id: true, name: true, area: true } } as const;
 
 const GROUP_BRIEF_INCLUDE = {
@@ -16,7 +16,7 @@ const GROUP_FULL_INCLUDE = {
   space: { select: { id: true, name: true, area: true, address: true } },
   members: {
     include: {
-      user: { select: { id: true, name: true, avatarUrl: true, jobTitle: true, company: true } },
+      user: { select: { id: true, name: true, avatarUrl: true, jobTitle: true, company: true, plan: true } },
     },
     orderBy: { joinedAt: "asc" as const },
   },

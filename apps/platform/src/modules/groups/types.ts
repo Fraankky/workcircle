@@ -4,6 +4,7 @@ export interface GroupAdmin {
   avatar_url: string | null;
   job_title: string | null;
   company: string | null;
+  bio: string | null;
 }
 
 export interface GroupSpace {
@@ -49,6 +50,7 @@ export interface GroupMember {
     avatar_url: string | null;
     job_title: string | null;
     company: string | null;
+    plan: "free" | "pro" | "team";
   };
 }
 

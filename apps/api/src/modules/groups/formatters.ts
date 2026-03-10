@@ -12,10 +12,10 @@ export type GroupBrief = Prisma.GroupGetPayload<{
 
 export type GroupFull = Prisma.GroupGetPayload<{
   include: {
-    admin: { select: { id: true; name: true; avatarUrl: true; jobTitle: true; company: true } };
+    admin: { select: { id: true; name: true; avatarUrl: true; jobTitle: true; company: true; bio: true } };
     space: { select: { id: true; name: true; area: true; address: true } };
     members: {
-      include: { user: { select: { id: true; name: true; avatarUrl: true; jobTitle: true; company: true } } };
+      include: { user: { select: { id: true; name: true; avatarUrl: true; jobTitle: true; company: true; plan: true } } };
     };
     _count: { select: { joinRequests: true } };
   };
@@ -58,7 +58,7 @@ export function formatGroupBrief(g: GroupBrief) {
   };
 }
 
-export function formatGroupFull(g: GroupFull) {
+export function formatGroupFull(g: GroupFull, showChatLink = false) {
   return {
     id: g.id,
     name: g.name,
@@ -73,8 +73,8 @@ export function formatGroupFull(g: GroupFull) {
     tags: g.tags,
     color: g.color,
     require_approval: g.requireApproval,
-    chat_link: g.chatLink,
-    chat_type: g.chatType,
+    chat_link: showChatLink ? g.chatLink : null,
+    chat_type: showChatLink ? g.chatType : null,
     cover_url: g.coverUrl,
     pending_count: g._count.joinRequests,
     created_at: g.createdAt.toISOString(),
@@ -85,6 +85,7 @@ export function formatGroupFull(g: GroupFull) {
       avatar_url: g.admin.avatarUrl,
       job_title: g.admin.jobTitle,
       company: g.admin.company,
+      bio: g.admin.bio,
     },
     space: g.space
       ? { id: g.space.id, name: g.space.name, area: g.space.area, address: g.space.address }
@@ -99,6 +100,7 @@ export function formatGroupFull(g: GroupFull) {
         avatar_url: m.user.avatarUrl,
         job_title: m.user.jobTitle,
         company: m.user.company,
+        plan: m.user.plan,
       },
     })),
   };

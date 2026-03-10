@@ -4,9 +4,10 @@ import { CalendarIcon, TagIcon, VibeIcon, LocationIcon, ExternalLinkIcon } from 
 
 interface GroupInfoTabProps {
   group: Group;
+  isAdmin?: boolean;
 }
 
-export function GroupInfoTab({ group }: GroupInfoTabProps) {
+export function GroupInfoTab({ group, isAdmin }: GroupInfoTabProps) {
   return (
     <div className="space-y-5">
       {/* Description */}
@@ -61,7 +62,7 @@ export function GroupInfoTab({ group }: GroupInfoTabProps) {
       )}
 
       {/* Chat link */}
-      {group.chat_link && (
+      {group.chat_link ? (
         <div>
           <h3 className="text-[10px] font-semibold text-faint uppercase tracking-widest mb-1.5">
             Grup Chat
@@ -77,6 +78,15 @@ export function GroupInfoTab({ group }: GroupInfoTabProps) {
               ? CHAT_TYPE_LABELS[group.chat_type] ?? group.chat_type
               : "Buka link"}
           </a>
+        </div>
+      ) : isAdmin && (
+        <div>
+          <h3 className="text-[10px] font-semibold text-faint uppercase tracking-widest mb-1.5">
+            Grup Chat
+          </h3>
+          <p className="text-xs text-faint italic">
+            Tambahkan link chat agar member bisa terhubung. Edit grup untuk mengisi link WA/Telegram/Discord.
+          </p>
         </div>
       )}
     </div>

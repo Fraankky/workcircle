@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
+import { PremiumModal } from "../../modules/subscriptions/components/premium-modal";
 import { useGroups } from "../../modules/groups/hooks";
 import { GroupCard } from "../../modules/groups/components/group-card";
 import { GroupCardSkeleton } from "../../components/ui/skeleton";
@@ -14,6 +15,7 @@ export function DiscoverPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState<"recent" | "popular">("recent");
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const debouncedSearch = useDebounce(search, 300);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +56,18 @@ export function DiscoverPage() {
   return (
     <div className="space-y-5 p-6">
       <PageHeader title="Discover" subtitle="Temukan komunitas kerja barengmu">
-        {user?.plan !== "free" && (
+        {user?.plan === "free" ? (
+          <button
+            onClick={() => setShowUpgrade(true)}
+            className="inline-flex items-center gap-1.5 text-muted text-xs font-medium px-3 py-2 rounded border border-border hover:border-ascent hover:text-fg transition-colors"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            Buat Grup
+          </button>
+        ) : (
           <Link
             to="/groups/new"
             className="inline-flex items-center gap-1.5 text-black text-xs font-medium px-3 py-2 rounded hover:bg-accent-glow transition-colors"
@@ -66,6 +79,7 @@ export function DiscoverPage() {
           </Link>
         )}
       </PageHeader>
+      <PremiumModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
 
       {/* Search + sort */}
       <div className="flex gap-2">

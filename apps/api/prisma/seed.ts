@@ -342,6 +342,73 @@ async function main() {
     },
   });
 
+  // [tech] sari admin ke-3 — remote workers, meetup Sudirman
+  const remoteGroup = await prisma.group.create({
+    data: {
+      name: "Remote Worker Sudirman",
+      description:
+        "Komunitas remote worker yang meetup rutin di area Sudirman-SCBD. Kita percaya produktivitas lebih tinggi saat ada teman kerja di sekitar. Datang dengan laptop dan semangat kerja!",
+      category: "tech",
+      adminId: sari.id,
+      spaceId: kumpul.id,
+      schedule: "Setiap Senin & Kamis",
+      timeStart: "09:00",
+      timeEnd: "17:00",
+      maxMembers: 20,
+      vibe: "Fokus & Silent",
+      tags: ["Remote Work", "WFH", "Productivity", "Coworking"],
+      color: "#0EA5E9",
+      requireApproval: true,
+      chatLink: "https://chat.whatsapp.com/remotesudirman",
+      chatType: "whatsapp",
+      isOpen: true,
+    },
+  });
+
+  // [creative] budi admin ke-3 — content creator, cafe Blok M
+  const contentGroup = await prisma.group.create({
+    data: {
+      name: "Content Creator Jakarta",
+      description:
+        "Ngumpul bareng content creator, youtuber, podcaster, dan penulis digital. Saling support, share strategy, dan bisa collab bareng. Setiap sesi ada mini brainstorm session untuk konten baru.",
+      category: "creative",
+      adminId: budi.id,
+      spaceId: filosofiKopi.id,
+      schedule: "Setiap Selasa",
+      timeStart: "14:00",
+      timeEnd: "18:00",
+      maxMembers: 10,
+      vibe: "Kreatif & Kolaboratif",
+      tags: ["Content Creator", "YouTube", "Podcast", "Writing"],
+      color: "#F97316",
+      requireApproval: false,
+      chatLink: "https://t.me/contentcreatorjkt",
+      chatType: "telegram",
+      isOpen: true,
+    },
+  });
+
+  // [business] rina admin ke-2 — growth & marketing, Kuningan
+  const growthGroup = await prisma.group.create({
+    data: {
+      name: "Growth & Marketing Circle",
+      description:
+        "Untuk marketer, growth hacker, dan business developer yang ingin networking dan belajar bareng. Setiap sesi ada case study dari salah satu anggota — semua level welcome!",
+      category: "business",
+      adminId: rina.id,
+      spaceId: commonGround.id,
+      schedule: "Setiap Jumat",
+      timeStart: "16:00",
+      timeEnd: "19:00",
+      maxMembers: 12,
+      vibe: "Networking & Diskusi",
+      tags: ["Marketing", "Growth", "SEO", "Performance Marketing"],
+      color: "#14B8A6",
+      requireApproval: true,
+      isOpen: true,
+    },
+  });
+
   // ──── Group Members ────
   console.log("Creating memberships...");
 
@@ -353,17 +420,25 @@ async function main() {
       { userId: budi.id, groupId: startupGroup.id, role: "admin" },
       { userId: sari.id, groupId: deepWorkGroup.id, role: "admin" },
       { userId: budi.id, groupId: ngopGroup.id, role: "admin" },
+      { userId: sari.id, groupId: remoteGroup.id, role: "admin" },
+      { userId: budi.id, groupId: contentGroup.id, role: "admin" },
+      { userId: rina.id, groupId: growthGroup.id, role: "admin" },
 
       // andi: member di tech & deep work, sudah join
       { userId: andi.id, groupId: techGroup.id, role: "member" },
       { userId: andi.id, groupId: deepWorkGroup.id, role: "member" },
       { userId: andi.id, groupId: ngopGroup.id, role: "member" },
 
-      // budi: member di tech group
+      // budi: member di tech group + remote group
       { userId: budi.id, groupId: techGroup.id, role: "member" },
+      { userId: budi.id, groupId: remoteGroup.id, role: "member" },
 
-      // rina: member di startup group
+      // rina: member di startup group + content group
       { userId: rina.id, groupId: startupGroup.id, role: "member" },
+      { userId: rina.id, groupId: contentGroup.id, role: "member" },
+
+      // sari: member di growth group
+      { userId: sari.id, groupId: growthGroup.id, role: "member" },
     ],
   });
 
@@ -396,6 +471,20 @@ async function main() {
         status: "approved",
         message: "PM yang ingin belajar design thinking untuk product development.",
         reviewedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      },
+      // pending — andi mau join remote group (waitlist kedua untuk admin sari)
+      {
+        groupId: remoteGroup.id,
+        userId: andi.id,
+        status: "pending",
+        message: "WFH udah 2 tahun dan pengen kerja bareng orang lain lagi. Boleh join?",
+      },
+      // pending — andi mau join growth group
+      {
+        groupId: growthGroup.id,
+        userId: andi.id,
+        status: "pending",
+        message: "Sebagai designer, pengen belajar lebih banyak tentang growth & marketing.",
       },
     ],
   });
@@ -439,14 +528,14 @@ async function main() {
   console.log("  Sudirman    → Kumpul Coworking");
   console.log("  Jakpus      → Kolega Co-Working, Sejiwa Coffee Menteng");
   console.log("\n📋 Demo accounts (password: password123):");
-  console.log("  andi@example.com  → FREE  | member di Ngoding Bareng, Deep Work, Ngopi");
-  console.log("                             | pending request ke Startup Founders Circle");
-  console.log("  sari@example.com  → PRO   | admin: Ngoding Bareng Jaksel + Deep Work Wednesday");
-  console.log("                             | ada 1 pending request masuk (dari Rina)");
-  console.log("  budi@example.com  → PRO   | admin: Startup Founders Circle + Ngopi Sambil Kerja");
-  console.log("                             | ada 1 pending request masuk (dari Andi)");
-  console.log("  rina@example.com  → TEAM  | admin: Design Jam Session");
-  console.log("                             | member di Startup Founders Circle");
+  console.log("  andi@example.com  → FREE  | member: Ngoding Bareng, Deep Work, Ngopi");
+  console.log("                             | pending: Startup Founders, Remote Worker, Growth Circle");
+  console.log("  sari@example.com  → PRO   | admin: Ngoding Bareng + Deep Work + Remote Worker");
+  console.log("                             | pending masuk: 2 (Rina → Ngoding, Andi → Remote)");
+  console.log("  budi@example.com  → PRO   | admin: Startup Founders + Ngopi + Content Creator");
+  console.log("                             | pending masuk: 1 (Andi → Startup)");
+  console.log("  rina@example.com  → TEAM  | admin: Design Jam + Growth & Marketing");
+  console.log("                             | pending masuk: 1 (Andi → Growth)");
 }
 
 main()

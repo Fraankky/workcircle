@@ -155,10 +155,20 @@ export function GroupDetailPage() {
               onLeave={handleLeave}
             />
           </div>
-          <div className="flex items-center gap-2 pt-2 border-t border-border-dim">
-            <Avatar src={group.admin.avatar_url} name={group.admin.name} size="xs" />
-            <span className="text-xs text-muted truncate">{group.admin.name}</span>
-            <span className="ml-auto text-xs text-faint font-medium whitespace-nowrap">
+          <div className="flex items-start gap-2.5 pt-2 border-t border-border-dim">
+            <Avatar src={group.admin.avatar_url} name={group.admin.name} size="sm" />
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-fg truncate">{group.admin.name}</p>
+              {(group.admin.job_title || group.admin.company) && (
+                <p className="text-[10px] text-faint truncate">
+                  {[group.admin.job_title, group.admin.company].filter(Boolean).join(" · ")}
+                </p>
+              )}
+              {group.admin.bio && (
+                <p className="text-[10px] text-faint mt-0.5 line-clamp-1">{group.admin.bio}</p>
+              )}
+            </div>
+            <span className="text-xs text-faint font-medium whitespace-nowrap shrink-0">
               {group.member_count}/{group.max_members} anggota
             </span>
           </div>
@@ -183,7 +193,7 @@ export function GroupDetailPage() {
         ))}
       </div>
 
-      {tab === "info" && <GroupInfoTab group={group} />}
+      {tab === "info" && <GroupInfoTab group={group} isAdmin={isAdmin} />}
       {tab === "members" && (
         <GroupMembersTab group={group} isAdmin={isAdmin} onRefetch={refetch} />
       )}

@@ -16,12 +16,18 @@ export function MemberCard({ member, canKick, onKick }: MemberCardProps) {
       <div className="flex items-center gap-2.5 min-w-0">
         <Avatar src={user.avatar_url} name={user.name} size="sm" />
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-sm font-medium text-fg truncate">
               {user.name}
             </span>
             {role === "admin" && (
               <Badge variant="approved">Admin</Badge>
+            )}
+            {user.plan === "pro" && role !== "admin" && (
+              <Badge variant="category">PRO</Badge>
+            )}
+            {user.plan === "team" && role !== "admin" && (
+              <Badge variant="category">Team</Badge>
             )}
           </div>
           {(user.job_title || user.company) && (
@@ -35,7 +41,7 @@ export function MemberCard({ member, canKick, onKick }: MemberCardProps) {
       {canKick && role !== "admin" && (
         <button
           onClick={() => onKick(user.id)}
-          className="flex-shrink-0 text-xs text-faint hover:text-danger transition-colors px-2 py-1 rounded"
+          className="shrink-0 text-xs text-faint hover:text-danger transition-colors px-2 py-1 rounded"
         >
           Keluarkan
         </button>

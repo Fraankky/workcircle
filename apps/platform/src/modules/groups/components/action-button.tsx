@@ -38,6 +38,19 @@ export function ActionButton({
     );
   }
 
+  if (myRequest?.status === "rejected") {
+    return (
+      <div className="shrink-0 text-right space-y-1">
+        <span className="text-xs font-medium bg-danger/10 text-danger px-3 py-2 rounded border border-danger/20 block">
+          Ditolak
+        </span>
+        {myRequest.rejection_reason && (
+          <p className="text-[10px] text-faint max-w-36 leading-tight">{myRequest.rejection_reason}</p>
+        )}
+      </div>
+    );
+  }
+
   if (!isOpen) {
     return (
       <span className="shrink-0 text-xs text-faint px-3 py-2">Penuh</span>
