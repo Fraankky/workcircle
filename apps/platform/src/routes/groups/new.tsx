@@ -29,7 +29,7 @@ export function GroupNewPage() {
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
-          <div>
+          <div className="space-y-4">
             <h2 className="text-base font-bold text-fg">
               Fitur Premium
             </h2>
@@ -37,16 +37,16 @@ export function GroupNewPage() {
               Upgrade ke Pro atau Team untuk membuat dan mengelola grup kerjamu sendiri.
             </p>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-6">
             <Link
               to="/upgrade"
-              className="w-full bg-accent text-bg text-sm font-medium py-2.5 rounded hover:bg-accent-glow transition-colors text-center"
+              className="w-full bg-neutral-600 text-bg text-sm font-medium py-2.5 rounded hover:bg-accent-glow hover:text-black transition-colors text-center"
             >
               Lihat Paket Premium
             </Link>
             <Link
               to="/discover"
-              className="text-xs text-muted hover:text-fg transition-colors"
+              className="text-xs text-muted hover:text-fg  transition-colors"
             >
               Kembali ke Discover
             </Link>

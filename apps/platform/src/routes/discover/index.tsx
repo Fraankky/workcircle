@@ -1,7 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
 import { useGroups } from "../../modules/groups/hooks";
-import { GroupList } from "../../modules/groups/components/group-list";
+import { GroupCard } from "../../modules/groups/components/group-card";
+import { GroupCardSkeleton } from "../../components/ui/skeleton";
+import { ErrorState, EmptyState } from "../../components/ui/error-state";
 import { CategoryFilter } from "../../modules/groups/components/category-filter";
 import { useAuth } from "../../modules/auth/hooks";
 import { useDebounce } from "../../lib/hooks/use-debounce";
@@ -13,13 +15,41 @@ export function DiscoverPage() {
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState<"recent" | "popular">("recent");
   const debouncedSearch = useDebounce(search, 300);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const { groups, isLoading, error } = useGroups({
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    error,
+  } = useGroups({
     category: category || undefined,
     search: debouncedSearch || undefined,
     sort,
   });
+
+  const groups = data?.pages.flatMap((p) => p.data) ?? [];
+  const total = data?.pages[0]?.meta.total ?? 0;
+
+  // IntersectionObserver — auto-load next page when sentinel is visible
+  const handleIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    [hasNextPage, isFetchingNextPage, fetchNextPage]
+  );
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(handleIntersect, { rootMargin: "200px" });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [handleIntersect]);
 
   return (
     <div className="space-y-5 p-6">
@@ -47,7 +77,6 @@ export function DiscoverPage() {
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <input
-            ref={inputRef}
             type="search"
             placeholder="Cari grup..."
             value={search}
@@ -71,12 +100,48 @@ export function DiscoverPage() {
       {/* Result count */}
       {!isLoading && !error && (
         <p className="text-xs text-faint">
-          {groups.length} grup ditemukan
+          {groups.length} dari {total} grup
         </p>
       )}
 
       {/* Group list */}
-      <GroupList groups={groups} isLoading={isLoading} error={error} />
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <GroupCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : error ? (
+        <ErrorState message={error instanceof Error ? error.message : "Gagal memuat grup"} />
+      ) : groups.length === 0 ? (
+        <EmptyState
+          message="Belum ada grup yang ditemukan"
+          hint="Coba ubah filter atau kata pencarian"
+        />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {groups.map((group) => (
+            <GroupCard key={group.id} group={group} />
+          ))}
+        </div>
+      )}
+
+      {/* Infinite scroll sentinel */}
+      <div ref={sentinelRef} className="h-1" />
+
+      {/* Loading more indicator */}
+      {isFetchingNextPage && (
+        <div className="flex justify-center py-4">
+          <div className="w-5 h-5 border-2 border-border border-t-fg/50 rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* End of results */}
+      {!hasNextPage && groups.length > 0 && !isLoading && (
+        <p className="text-center text-xs text-faint py-4">
+          Semua {total} grup sudah ditampilkan
+        </p>
+      )}
     </div>
   );
 }

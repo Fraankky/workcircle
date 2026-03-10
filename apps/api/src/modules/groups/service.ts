@@ -26,12 +26,14 @@ const GROUP_FULL_INCLUDE = {
 export async function listGroups(query: ListGroupsQuery) {
   const { page, limit, category, search, sort } = query;
 
+  // Use full-text search when search term is provided
+  if (search) {
+    return listGroupsFts({ page, limit, category, search, sort });
+  }
+
   const where = {
     AND: [
       category ? { category } : {},
-      search
-        ? { OR: [{ name: { contains: search, mode: "insensitive" as const } }, { description: { contains: search, mode: "insensitive" as const } }] }
-        : {},
     ],
   };
 
@@ -46,6 +48,71 @@ export async function listGroups(query: ListGroupsQuery) {
   ]);
 
   return { groups, total };
+}
+
+type RawGroup = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  admin_id: string;
+  space_id: string | null;
+  schedule: string;
+  time_start: string;
+  time_end: string;
+  max_members: number;
+  vibe: string | null;
+  is_open: boolean;
+  tags: unknown;
+  color: string;
+  require_approval: boolean;
+  chat_link: string | null;
+  chat_type: string | null;
+  cover_url: string | null;
+  created_at: Date;
+  updated_at: Date;
+};
+
+async function listGroupsFts(query: { page: number; limit: number; category?: string; search: string; sort: string }) {
+  const { page, limit, category, search, sort } = query;
+  const offset = (page - 1) * limit;
+
+  const categoryFilter = category ? `AND category::text = '${category}'` : "";
+  const orderByClause =
+    sort === "popular"
+      ? "ORDER BY member_count DESC"
+      : "ORDER BY g.created_at DESC";
+
+  const rawGroups = await prisma.$queryRawUnsafe<(RawGroup & { rank: number })[]>(`
+    SELECT g.*,
+           ts_rank(g.search_vector, plainto_tsquery('simple', $1)) AS rank
+    FROM groups g
+    WHERE g.search_vector @@ plainto_tsquery('simple', $1)
+    ${categoryFilter}
+    ${orderByClause}
+    LIMIT $2 OFFSET $3
+  `, search, limit, offset);
+
+  const [{ count }] = await prisma.$queryRawUnsafe<[{ count: bigint }]>(`
+    SELECT count(*) FROM groups g
+    WHERE g.search_vector @@ plainto_tsquery('simple', $1)
+    ${categoryFilter}
+  `, search);
+
+  const total = Number(count);
+
+  // Fetch related data for each group
+  const groups = await prisma.group.findMany({
+    where: { id: { in: rawGroups.map((g) => g.id) } },
+    include: GROUP_BRIEF_INCLUDE,
+  });
+
+  // Preserve FTS order
+  const ordered = rawGroups
+    .map((r) => groups.find((g) => g.id === r.id))
+    .filter(Boolean) as typeof groups;
+
+  return { groups: ordered, total };
 }
 
 export async function getGroup(id: string) {

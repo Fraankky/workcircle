@@ -1,6 +1,7 @@
 import { Outlet, useRouterState } from "@tanstack/react-router";
 import { AuthProvider } from "../modules/auth/hooks";
 import { Layout } from "../components/layout";
+import { ErrorBoundary } from "../components/error-boundary";
 
 const AUTH_PATHS = ["/login", "/register", "/onboarding", "/forgot-password", "/reset-password", "/verify-email"];
 
@@ -29,10 +30,14 @@ export function RootLayout() {
       </div>
 
       {isAuthPage ? (
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       ) : (
         <Layout>
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </Layout>
       )}
     </AuthProvider>

@@ -1,7 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { api } from "../../../lib/api-client";
 import { qk } from "../../../lib/query-keys";
-import type { ListMeta } from "../../../lib/api-client";
 import type { Group } from "../types";
 
 interface Filters {
@@ -10,33 +9,22 @@ interface Filters {
   sort?: "recent" | "popular";
 }
 
-interface UseGroupsResult {
-  groups: Group[];
-  meta: ListMeta | null;
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => void;
-}
+const PAGE_SIZE = 12;
 
-export function useGroups(filters: Filters = {}): UseGroupsResult {
+export function useGroups(filters: Filters = {}) {
   const { category, search, sort } = filters;
 
-  const query = useQuery({
+  return useInfiniteQuery({
     queryKey: qk.groups({ category, search, sort }),
-    queryFn: () => {
-      const params = new URLSearchParams({ page: "1", limit: "20" });
+    queryFn: ({ pageParam = 1 }) => {
+      const params = new URLSearchParams({ page: String(pageParam), limit: String(PAGE_SIZE) });
       if (category) params.set("category", category);
       if (search) params.set("search", search);
       if (sort) params.set("sort", sort);
       return api.list<Group>(`/api/groups?${params}`);
     },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.meta.has_more ? allPages.length + 1 : undefined,
   });
-
-  return {
-    groups: query.data?.data ?? [],
-    meta: query.data?.meta ?? null,
-    isLoading: query.isLoading,
-    error: query.error instanceof Error ? query.error.message : null,
-    refetch: query.refetch,
-  };
 }

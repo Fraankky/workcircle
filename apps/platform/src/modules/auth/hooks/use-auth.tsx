@@ -20,6 +20,7 @@ export interface User {
   plan: "free" | "pro" | "team";
   profileComplete: boolean;
   emailVerified: boolean;
+  isAdmin: boolean;
   createdAt: string;
 }
 

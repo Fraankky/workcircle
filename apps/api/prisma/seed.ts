@@ -129,6 +129,105 @@ async function main() {
     },
   });
 
+  // ──── Additional Spaces: Jakarta Coffee Shops & Coworking ────
+  console.log("Creating additional spaces...");
+
+  const commonGround = await prisma.space.create({
+    data: {
+      name: "Common Ground Kuningan",
+      area: "Kuningan",
+      address: "Jl. HR Rasuna Said Kav. 62, Kuningan, Jakarta Selatan",
+      latitude: -6.2281,
+      longitude: 106.8314,
+      wifiSpeed: "very_fast",
+      noiseLevel: "medium",
+      hasPower: true,
+      priceRange: "150k-300k",
+      rating: 4.8,
+      seatCount: 80,
+    },
+  });
+
+  const coLabs = await prisma.space.create({
+    data: {
+      name: "CoLabs Kuningan",
+      area: "Kuningan",
+      address: "Jl. Prof. Dr. Satrio No. 18, Kuningan, Jakarta Selatan",
+      latitude: -6.2265,
+      longitude: 106.8305,
+      wifiSpeed: "fast",
+      noiseLevel: "quiet",
+      hasPower: true,
+      priceRange: "100k-200k",
+      rating: 4.6,
+      seatCount: 45,
+    },
+  });
+
+  const kumpul = await prisma.space.create({
+    data: {
+      name: "Kumpul Coworking Sudirman",
+      area: "Sudirman",
+      address: "Jl. Jend. Sudirman Kav. 52-53, SCBD, Jakarta Selatan",
+      latitude: -6.2197,
+      longitude: 106.8070,
+      wifiSpeed: "very_fast",
+      noiseLevel: "quiet",
+      hasPower: true,
+      priceRange: "100k-250k",
+      rating: 4.7,
+      seatCount: 60,
+    },
+  });
+
+  const filosofiKopi = await prisma.space.create({
+    data: {
+      name: "Filosofi Kopi Melawai",
+      area: "Blok M",
+      address: "Jl. Melawai Raya No. 8, Kebayoran Baru, Jakarta Selatan",
+      latitude: -6.2449,
+      longitude: 106.7994,
+      wifiSpeed: "fast",
+      noiseLevel: "medium",
+      hasPower: true,
+      priceRange: "50k-100k",
+      rating: 4.5,
+      seatCount: 35,
+    },
+  });
+
+  const conclave = await prisma.space.create({
+    data: {
+      name: "Conclave Kemang",
+      area: "Kemang",
+      address: "Jl. Kemang Raya No. 7, Kemang, Jakarta Selatan",
+      latitude: -6.2619,
+      longitude: 106.8113,
+      wifiSpeed: "fast",
+      noiseLevel: "buzzy",
+      hasPower: true,
+      priceRange: "80k-150k",
+      rating: 4.4,
+      seatCount: 40,
+    },
+  });
+
+  const sejiwa = await prisma.space.create({
+    data: {
+      name: "Sejiwa Coffee Menteng",
+      area: "Menteng",
+      address: "Jl. Teuku Cik Ditiro No. 32, Menteng, Jakarta Pusat",
+      latitude: -6.1941,
+      longitude: 106.8327,
+      wifiSpeed: "medium",
+      noiseLevel: "quiet",
+      hasPower: true,
+      priceRange: "40k-80k",
+      rating: 4.3,
+      seatCount: 25,
+    },
+  });
+
   // ──── Groups (5 grup, cover semua category) ────
   console.log("Creating groups...");
 
@@ -334,6 +433,11 @@ async function main() {
   });
 
   console.log("\n✅ Seeding completed!");
+  console.log("\n🗺️  Spaces (9 total):");
+  console.log("  Kuningan    → Common Ground Kuningan, CoLabs Kuningan");
+  console.log("  Jaksel      → Kopitiam Senopati, MAXY Academy, Filosofi Kopi, Conclave Kemang");
+  console.log("  Sudirman    → Kumpul Coworking");
+  console.log("  Jakpus      → Kolega Co-Working, Sejiwa Coffee Menteng");
   console.log("\n📋 Demo accounts (password: password123):");
   console.log("  andi@example.com  → FREE  | member di Ngoding Bareng, Deep Work, Ngopi");
   console.log("                             | pending request ke Startup Founders Circle");

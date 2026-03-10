@@ -16,6 +16,10 @@ import { UpgradeSuccessPage } from "./routes/upgrade/success";
 import { UpgradeCancelPage } from "./routes/upgrade/cancel";
 import { ProfilePage } from "./routes/profile/index";
 import { OnboardingPage } from "./routes/onboarding/index";
+import { AdminDashboardPage } from "./routes/admin/index";
+import { AdminSpacesPage } from "./routes/admin/spaces";
+import { AdminUsersPage } from "./routes/admin/users";
+import { AdminGroupsPage } from "./routes/admin/groups";
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({ component: RootLayout });
@@ -125,6 +129,31 @@ const upgradeCancelRoute = createRoute({
   component: UpgradeCancelPage,
 });
 
+// ── Admin pages ───────────────────────────────────────────────────────────────
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin",
+  component: AdminDashboardPage,
+});
+
+const adminSpacesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/spaces",
+  component: AdminSpacesPage,
+});
+
+const adminUsersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/users",
+  component: AdminUsersPage,
+});
+
+const adminGroupsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin/groups",
+  component: AdminGroupsPage,
+});
+
 // ── Route tree ────────────────────────────────────────────────────────────────
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -144,6 +173,10 @@ const routeTree = rootRoute.addChildren([
   upgradeRoute,
   upgradeSuccessRoute,
   upgradeCancelRoute,
+  adminRoute,
+  adminSpacesRoute,
+  adminUsersRoute,
+  adminGroupsRoute,
 ]);
 
 export const router = createRouter({ routeTree });

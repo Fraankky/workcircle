@@ -19,6 +19,7 @@ export const USER_SELECT = {
   plan: true,
   profileComplete: true,
   emailVerified: true,
+  isAdmin: true,
   createdAt: true,
 } as const;
 

@@ -84,6 +84,7 @@ model User {
   location        String?
   profileComplete Boolean   @default(false) @map("profile_complete")
   emailVerified   Boolean   @default(false) @map("email_verified")
+  isAdmin         Boolean   @default(false) @map("is_admin")
   plan            UserPlan  @default(free)
   planExpires     DateTime? @map("plan_expires")
   createdAt       DateTime  @default(now()) @map("created_at")

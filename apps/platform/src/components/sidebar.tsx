@@ -82,6 +82,26 @@ export function Sidebar() {
         })}
       </nav>
 
+      {/* Admin link */}
+      {user.isAdmin && (
+        <div className="px-3 border-t border-border pt-2">
+          <Link
+            to="/admin"
+            className={cn(
+              "flex items-center gap-3 px-3 py-2 rounded text-sm transition-colors",
+              location.pathname.startsWith("/admin")
+                ? "bg-overlay text-fg"
+                : "text-muted hover:bg-overlay hover:text-fg",
+            )}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Admin
+          </Link>
+        </div>
+      )}
+
       {/* Bottom: upgrade + user */}
       <div className="px-3 pb-8 space-y-3 border-t border-border pt-3">
         {user.plan === "free" && (
