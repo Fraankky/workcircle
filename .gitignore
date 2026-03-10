@@ -7,3 +7,5 @@ apps/platform/node_modules
 apps/platform/dist
 
 docs
+
+.claude 

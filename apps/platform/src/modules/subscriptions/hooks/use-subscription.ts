@@ -26,9 +26,16 @@ export function useSubscription() {
   };
 
   const upgradeMutation = useMutation({
-    mutationFn: (plan: "pro" | "team") =>
-      api.post<Subscription>("/api/subscriptions/upgrade", { plan }),
-    onSuccess: afterMutation,
+    mutationFn: async (plan: "pro" | "team") => {
+      const { checkoutUrl } = await api.post<{ checkoutUrl: string }>(
+        "/api/subscriptions/checkout",
+        { plan }
+      );
+      // Redirect to Mayar checkout page
+      window.location.href = checkoutUrl;
+      // Return a placeholder — page navigates away before this resolves
+      return null as unknown as Subscription;
+    },
   });
 
   const cancelMutation = useMutation({

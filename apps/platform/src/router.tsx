@@ -12,6 +12,8 @@ import { SpacesPage } from "./routes/spaces/index";
 import { SpaceDetailPage } from "./routes/spaces/$id";
 import { GroupsPage } from "./routes/groups/index";
 import { UpgradePage } from "./routes/upgrade/index";
+import { UpgradeSuccessPage } from "./routes/upgrade/success";
+import { UpgradeCancelPage } from "./routes/upgrade/cancel";
 import { ProfilePage } from "./routes/profile/index";
 import { OnboardingPage } from "./routes/onboarding/index";
 
@@ -111,6 +113,18 @@ const upgradeRoute = createRoute({
   component: UpgradePage,
 });
 
+const upgradeSuccessRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/upgrade/success",
+  component: UpgradeSuccessPage,
+});
+
+const upgradeCancelRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/upgrade/cancel",
+  component: UpgradeCancelPage,
+});
+
 // ── Route tree ────────────────────────────────────────────────────────────────
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -128,6 +142,8 @@ const routeTree = rootRoute.addChildren([
   spaceDetailRoute,
   profileRoute,
   upgradeRoute,
+  upgradeSuccessRoute,
+  upgradeCancelRoute,
 ]);
 
 export const router = createRouter({ routeTree });

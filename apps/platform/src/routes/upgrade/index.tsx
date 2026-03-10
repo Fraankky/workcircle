@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import { PlanCard } from "../../modules/subscriptions/components/plan-card";
 import { useSubscription } from "../../modules/subscriptions/hooks/use-subscription";
 import { useAuth } from "../../modules/auth/hooks";
@@ -9,7 +8,6 @@ import { PageHeader } from "../../components/ui/page-header";
 export function UpgradePage() {
   const { user } = useAuth();
   const { subscription, upgrade, cancel } = useSubscription();
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const currentPlan = user?.plan ?? "free";
@@ -18,12 +16,12 @@ export function UpgradePage() {
     setIsLoading(true);
     try {
       await upgrade(plan);
-      navigate({ to: "/discover" });
+      // upgrade() redirects to Mayar — page will navigate away
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal upgrade");
-    } finally {
+      alert(err instanceof Error ? err.message : "Gagal membuat link pembayaran");
       setIsLoading(false);
     }
+    // Don't set loading false on success — user is being redirected to Mayar
   }
 
   async function handleCancel() {
@@ -80,7 +78,7 @@ export function UpgradePage() {
       </div>
 
       <p className="text-[10px] text-faint text-center">
-        Pembayaran diproses melalui Mayar.id. Upgrade ini adalah simulasi untuk demo.
+        Pembayaran diproses secara aman melalui Mayar.id. Kamu akan diarahkan ke halaman pembayaran Mayar.
       </p>
     </div>
   );

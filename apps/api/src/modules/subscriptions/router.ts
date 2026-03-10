@@ -3,8 +3,13 @@ import { zValidator } from "@hono/zod-validator";
 import type { Context } from "../../types.js";
 import { requireAuth } from "../../middleware/auth.js";
 import { NotFoundError } from "../../exceptions.js";
+import { prisma } from "../../utils/prisma.js";
 import { upgradeSchema } from "./schema.js";
-import { getSubscription, mockUpgrade, cancelSubscription } from "./service.js";
+import {
+  getSubscription,
+  createMayarCheckout,
+  cancelSubscription,
+} from "./service.js";
 import { webhookRouter } from "./webhook.js";
 
 function formatSubscription(s: NonNullable<Awaited<ReturnType<typeof getSubscription>>>) {
@@ -21,6 +26,7 @@ function formatSubscription(s: NonNullable<Awaited<ReturnType<typeof getSubscrip
 
 export const subscriptionsRouter = new Hono<Context>()
 
+  // GET /api/subscriptions/me
   .get("/me", requireAuth, async (c) => {
     const user = c.get("user")!;
     const subscription = await getSubscription(user.id);
@@ -28,13 +34,25 @@ export const subscriptionsRouter = new Hono<Context>()
     return c.json({ data: formatSubscription(subscription) });
   })
 
-  .post("/upgrade", requireAuth, zValidator("json", upgradeSchema), async (c) => {
-    const user = c.get("user")!;
+  // POST /api/subscriptions/checkout — buat Mayar payment link
+  .post("/checkout", requireAuth, zValidator("json", upgradeSchema), async (c) => {
+    const userPayload = c.get("user")!;
     const { plan } = c.req.valid("json");
-    const subscription = await mockUpgrade(user.id, plan);
-    return c.json({ data: formatSubscription(subscription) }, 201);
+
+    const user = await prisma.user.findUnique({ where: { id: userPayload.id } });
+    if (!user) throw new NotFoundError("User");
+
+    const checkoutUrl = await createMayarCheckout({
+      userId: user.id,
+      userName: user.name,
+      userEmail: user.email,
+      plan,
+    });
+
+    return c.json({ data: { checkoutUrl } });
   })
 
+  // POST /api/subscriptions/cancel
   .post("/cancel", requireAuth, async (c) => {
     const user = c.get("user")!;
     const subscription = await cancelSubscription(user.id);
