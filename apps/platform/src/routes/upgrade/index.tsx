@@ -10,9 +10,9 @@ export function UpgradePage() {
   const { subscription, upgrade, cancel } = useSubscription();
   const [isLoading, setIsLoading] = useState(false);
 
-  const currentPlan = user?.plan ?? "free";
+  const currentPlan = (user?.plan === "team" ? "pro" : user?.plan) ?? "free";
 
-  async function handleUpgrade(plan: "pro" | "team") {
+  async function handleUpgrade(plan: "pro") {
     setIsLoading(true);
     try {
       await upgrade(plan);
@@ -64,8 +64,8 @@ export function UpgradePage() {
       )}
 
       {/* Plan cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {(["free", "pro", "team"] as const).map((key) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {(["free", "pro"] as const).map((key) => (
           <PlanCard
             key={key}
             planKey={key}

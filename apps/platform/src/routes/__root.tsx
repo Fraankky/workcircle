@@ -3,11 +3,11 @@ import { AuthProvider } from "../modules/auth/hooks";
 import { Layout } from "../components/layout";
 import { ErrorBoundary } from "../components/error-boundary";
 
-const AUTH_PATHS = ["/login", "/register", "/onboarding", "/forgot-password", "/reset-password", "/verify-email"];
+const NO_SIDEBAR_PATHS = ["/", "/login", "/register", "/onboarding", "/forgot-password", "/reset-password", "/verify-email"];
 
 export function RootLayout() {
   const { location } = useRouterState();
-  const isAuthPage = AUTH_PATHS.includes(location.pathname);
+  const isAuthPage = NO_SIDEBAR_PATHS.includes(location.pathname);
 
   return (
     <AuthProvider>

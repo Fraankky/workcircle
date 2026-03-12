@@ -22,13 +22,8 @@ export const PLANS = {
   },
   pro: {
     label: "Pro",
-    price: 49_000,
+    price: 14_000,
     features: ["Buat grup (max 3)", "Bergabung tanpa batas", "Profil premium"],
-  },
-  team: {
-    label: "Team",
-    price: 149_000,
-    features: ["Buat grup (max 10)", "Semua fitur Pro", "Prioritas support"],
   },
 } as const;
 

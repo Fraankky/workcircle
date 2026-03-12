@@ -1,5 +1,6 @@
-import { createRouter, createRoute, createRootRoute, redirect } from "@tanstack/react-router";
+import { createRouter, createRoute, createRootRoute } from "@tanstack/react-router";
 import { RootLayout } from "./routes/__root";
+import { LandingPage } from "./routes/home/index";
 import { LoginPage } from "./routes/login";
 import { RegisterPage } from "./routes/register";
 import { ForgotPasswordPage } from "./routes/forgot-password";
@@ -61,11 +62,11 @@ const verifyEmailRoute = createRoute({
   component: VerifyEmailPage,
 });
 
-// ── Index redirect ─────────────────────────────────────────────────────────────
+// ── Index — Landing page ───────────────────────────────────────────────────────
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  beforeLoad: () => { throw redirect({ to: "/discover" }); },
+  component: LandingPage,
 });
 
 // ── App pages ─────────────────────────────────────────────────────────────────

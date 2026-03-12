@@ -5,19 +5,32 @@ import { useNotifications } from "../modules/notifications/hooks/use-notificatio
 export function NotificationBell() {
   const { notifications, unreadCount, markAllRead, markRead } = useNotifications();
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
 
   // Close on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  function handleBellClick() {
+    if (!open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + 8,
+        left: Math.max(8, rect.right - 320),
+      });
+    }
+    setOpen((v) => !v);
+  }
 
   function handleNotifClick(id: string, linkUrl: string | null) {
     markRead(id);
@@ -30,9 +43,10 @@ export function NotificationBell() {
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={wrapperRef} className="relative">
       <button
-        onClick={() => setOpen((v) => !v)}
+        ref={buttonRef}
+        onClick={handleBellClick}
         className="relative p-1.5 text-muted hover:text-fg transition-colors"
         aria-label="Notifikasi"
       >
@@ -45,7 +59,14 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-overlay border border-border rounded shadow-xl z-50 overflow-hidden">
+        <div
+          className="fixed w-80 border border-border rounded shadow-2xl z-9999 overflow-hidden"
+          style={{
+            top: dropdownPos.top,
+            left: dropdownPos.left,
+            background: "#0E0E12",
+          }}
+        >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <span className="text-xs font-semibold text-fg">Notifikasi</span>

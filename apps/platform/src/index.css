@@ -132,6 +132,21 @@ select option {
   background: rgba(255, 255, 255, 0.20);
 }
 
+/* ── Landing page: marquee animation ─────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.landing-marquee {
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+}
+
+.landing-marquee:hover {
+  animation-play-state: paused;
+}
+
 /* ── Leaflet + shadcn-map overrides (dark theme) ─────────────────── */
 
 .leaflet-container {

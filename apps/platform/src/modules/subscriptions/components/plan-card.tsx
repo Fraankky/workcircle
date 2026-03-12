@@ -1,13 +1,13 @@
 import { PLANS } from "../../../lib/constants";
 import { formatPrice } from "../../../lib/utils";
 
-type PlanKey = "free" | "pro" | "team";
+type PlanKey = "free" | "pro";
 
 interface PlanCardProps {
   planKey: PlanKey;
   currentPlan: PlanKey;
   recommended?: boolean;
-  onUpgrade: (plan: "pro" | "team") => void;
+  onUpgrade: (plan: "pro") => void;
   isLoading: boolean;
 }
 
@@ -20,9 +20,7 @@ export function PlanCard({
 }: PlanCardProps) {
   const plan = PLANS[planKey];
   const isCurrent = currentPlan === planKey;
-  const isDowngrade =
-    (planKey === "free" && currentPlan !== "free") ||
-    (planKey === "pro" && currentPlan === "team");
+  const isDowngrade = planKey === "free" && currentPlan !== "free";
 
   return (
     <div
@@ -77,7 +75,7 @@ export function PlanCard({
         </div>
       ) : isDowngrade || planKey === "free" ? null : (
         <button
-          onClick={() => onUpgrade(planKey as "pro" | "team")}
+          onClick={() => onUpgrade(planKey as "pro")}
           disabled={isLoading}
           className={`w-full text-xs font-semibold py-2.5 rounded transition-all disabled:opacity-50 ${
             recommended
