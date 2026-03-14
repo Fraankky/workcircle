@@ -30,7 +30,7 @@ export const subscriptionsRouter = new Hono<Context>()
   .get("/me", requireAuth, async (c) => {
     const user = c.get("user")!;
     const subscription = await getSubscription(user.id);
-    if (!subscription) throw new NotFoundError("Subscription");
+    if (!subscription) return c.json({ data: null });
     return c.json({ data: formatSubscription(subscription) });
   })
 
