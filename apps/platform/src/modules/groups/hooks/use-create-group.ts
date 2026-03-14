@@ -17,6 +17,7 @@ interface CreateGroupData {
   chatLink?: string;
   chatType?: string;
   requireApproval?: boolean;
+  coverUrl?: string;
 }
 
 export function useCreateGroup() {

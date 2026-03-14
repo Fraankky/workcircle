@@ -48,8 +48,8 @@ export function useJoinRequests(groupId: string): JoinRequestsState {
       : query.error instanceof Error
         ? query.error.message
         : null,
-    approve: (requestId) => approveMutation.mutateAsync(requestId),
-    reject: (requestId, reason) => rejectMutation.mutateAsync({ requestId, reason }),
+    approve: (requestId) => approveMutation.mutateAsync(requestId).then(() => {}),
+    reject: (requestId, reason) => rejectMutation.mutateAsync({ requestId, reason }).then(() => {}),
     refetch: query.refetch,
   };
 }

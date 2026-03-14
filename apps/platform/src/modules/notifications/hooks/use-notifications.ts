@@ -15,7 +15,7 @@ export function useNotifications() {
 
   const query = useQuery({
     queryKey: qk.notifications(),
-    queryFn: () => api.list<Notification>("/api/notifications") as Promise<NotificationsResponse>,
+    queryFn: () => api.list<Notification>("/api/notifications") as unknown as Promise<NotificationsResponse>,
     refetchInterval: 30_000,
     enabled: isAuthenticated,
   });

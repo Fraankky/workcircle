@@ -14,9 +14,9 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
   const { upgrade } = useSubscription();
   const [isLoading, setIsLoading] = useState(false);
 
-  const currentPlan = user?.plan ?? "free";
+  const currentPlan = (user?.plan ?? "free") as "free" | "pro";
 
-  async function handleUpgrade(plan: "pro" | "team") {
+  async function handleUpgrade(plan: "pro") {
     setIsLoading(true);
     try {
       await upgrade(plan);
@@ -36,7 +36,7 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
           Upgrade untuk membuat dan mengelola grup kerjamu sendiri.
         </p>
         <div className="grid grid-cols-1 gap-4 pt-1">
-          {(["free", "pro", "team"] as const).map((key) => (
+          {(["free", "pro"] as const).map((key) => (
             <PlanCard
               key={key}
               planKey={key}
