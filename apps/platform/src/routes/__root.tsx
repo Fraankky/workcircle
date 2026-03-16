@@ -2,6 +2,7 @@ import { Outlet, useRouterState } from "@tanstack/react-router";
 import { AuthProvider } from "../modules/auth/hooks";
 import { Layout } from "../components/layout";
 import { ErrorBoundary } from "../components/error-boundary";
+import { ToastProvider } from "../components/ui/toast";
 
 const NO_SIDEBAR_PATHS = ["/", "/login", "/register", "/onboarding", "/forgot-password", "/reset-password", "/verify-email"];
 
@@ -10,6 +11,7 @@ export function RootLayout() {
   const isAuthPage = NO_SIDEBAR_PATHS.includes(location.pathname);
 
   return (
+    <ToastProvider>
     <AuthProvider>
       {/* Gradient orbs */}
       <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
@@ -41,5 +43,6 @@ export function RootLayout() {
         </Layout>
       )}
     </AuthProvider>
+    </ToastProvider>
   );
 }

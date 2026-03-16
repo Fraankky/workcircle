@@ -26,7 +26,7 @@ export function useCreateGroup() {
   const mutation = useMutation({
     mutationFn: (data: CreateGroupData) => api.post<Group>("/api/groups", data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: qk.groups() });
       queryClient.invalidateQueries({ queryKey: qk.myGroups() });
     },
   });

@@ -1,5 +1,9 @@
+import { useState } from "react";
 import { useGroupActions } from "../hooks/use-group-actions";
+import { ConfirmModal } from "../../../components/ui/confirm-modal";
 import { MemberCard } from "./member-card";
+import { useToast } from "../../../components/ui/toast";
+import { ApiError } from "../../../lib/api-client";
 import type { Group } from "../types";
 
 interface GroupMembersTabProps {
@@ -11,13 +15,18 @@ interface GroupMembersTabProps {
 export function GroupMembersTab({ group, isAdmin, onRefetch }: GroupMembersTabProps) {
   const members = group.members ?? [];
   const { kick } = useGroupActions(group.id, onRefetch);
+  const { toast } = useToast();
+  const [kickUserId, setKickUserId] = useState<string | null>(null);
 
-  async function handleKick(userId: string) {
-    if (!confirm("Yakin ingin mengeluarkan anggota ini?")) return;
+  async function handleKickConfirm() {
+    if (!kickUserId) return;
     try {
-      await kick(userId);
-    } catch {
-      alert("Gagal mengeluarkan anggota");
+      await kick(kickUserId);
+      toast("Anggota berhasil dikeluarkan", "success");
+    } catch (err) {
+      toast(err instanceof ApiError ? err.message : "Gagal mengeluarkan anggota", "error");
+    } finally {
+      setKickUserId(null);
     }
   }
 
@@ -40,9 +49,17 @@ export function GroupMembersTab({ group, isAdmin, onRefetch }: GroupMembersTabPr
           key={member.id}
           member={member}
           canKick={isAdmin}
-          onKick={handleKick}
+          onKick={(userId) => setKickUserId(userId)}
         />
       ))}
+
+      <ConfirmModal
+        open={kickUserId !== null}
+        onClose={() => setKickUserId(null)}
+        onConfirm={handleKickConfirm}
+        message="Yakin ingin mengeluarkan anggota ini dari grup?"
+        confirmLabel="Keluarkan"
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Modal } from "../../../components/ui/modal";
 import { PlanCard } from "./plan-card";
 import { useSubscription } from "../hooks/use-subscription";
 import { useAuth } from "../../auth/hooks";
+import { useToast } from "../../../components/ui/toast";
 
 interface PremiumModalProps {
   open: boolean;
@@ -12,6 +13,7 @@ interface PremiumModalProps {
 export function PremiumModal({ open, onClose }: PremiumModalProps) {
   const { user } = useAuth();
   const { upgrade } = useSubscription();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const currentPlan = (user?.plan ?? "free") as "free" | "pro";
@@ -22,8 +24,7 @@ export function PremiumModal({ open, onClose }: PremiumModalProps) {
       await upgrade(plan);
       onClose();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Gagal upgrade";
-      alert(msg);
+      toast(err instanceof Error ? err.message : "Gagal upgrade", "error");
     } finally {
       setIsLoading(false);
     }

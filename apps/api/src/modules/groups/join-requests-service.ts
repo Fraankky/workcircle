@@ -23,13 +23,14 @@ export async function submitJoinRequest(groupId: string, userId: string, message
   const existing = await prisma.groupJoinRequest.findUnique({ where: { userId_groupId: { userId, groupId } } });
   if (existing && existing.status === "pending") throw new ConflictError("Kamu sudah punya permintaan bergabung yang sedang menunggu");
 
-  // Free user max 3 active requests
+  // Free user max 3 active groups
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (user?.plan === "free") {
-    const activeCount = await prisma.groupJoinRequest.count({
-      where: { userId, status: { in: ["pending", "approved"] } },
+    const memberCount = await prisma.groupMember.count({ where: { userId } });
+    const pendingCount = await prisma.groupJoinRequest.count({
+      where: { userId, status: "pending" },
     });
-    if (activeCount >= 3) throw new ForbiddenError("Upgrade ke PRO untuk bergabung ke lebih dari 3 grup");
+    if (memberCount + pendingCount >= 3) throw new ForbiddenError("Upgrade ke PRO untuk bergabung ke lebih dari 3 grup");
   }
 
   if (!group.requireApproval) {

@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useParams, Link } from "@tanstack/react-router";
 import { uploadImage } from "../../lib/upload";
-import { api } from "../../lib/api-client";
+import { api, ApiError } from "../../lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { qk } from "../../lib/query-keys";
 import { BackLink } from "../../components/ui/back-link";
@@ -13,10 +13,12 @@ import { GroupWaitlistTab } from "../../modules/groups/components/group-waitlist
 import { Avatar } from "../../components/ui/avatar";
 import { Badge } from "../../components/ui/badge";
 import { Modal } from "../../components/ui/modal";
+import { ConfirmModal } from "../../components/ui/confirm-modal";
 import { GroupDetailSkeleton } from "../../components/ui/skeleton";
 import { ActionButton } from "../../modules/groups/components/action-button";
 import { GroupAdminPanel } from "../../modules/groups/components/group-admin-panel";
 import { CATEGORY_LABELS } from "../../lib/constants";
+import { useToast } from "../../components/ui/toast";
 
 type Tab = "info" | "members" | "waitlist";
 
@@ -25,9 +27,12 @@ export function GroupDetailPage() {
   const { group, myRequest, isLoading, error, isAdmin, isMember, refetch } =
     useGroupDetail(id);
   const { join, leave, isJoining: busy } = useGroupActions(id, refetch);
+  const { toast } = useToast();
   const [tab, setTab] = useState<Tab>("info");
   const [joinOpen, setJoinOpen] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
   const [message, setMessage] = useState("");
+  const [leaveOpen, setLeaveOpen] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -40,8 +45,9 @@ export function GroupDetailPage() {
       const publicUrl = await uploadImage(file, "group-cover");
       await api.patch(`/api/groups/${id}`, { coverUrl: publicUrl });
       queryClient.invalidateQueries({ queryKey: qk.group(id) });
+      toast("Cover berhasil diupdate", "success");
     } catch {
-      alert("Upload cover gagal");
+      toast("Upload cover gagal", "error");
     } finally {
       setCoverUploading(false);
       if (coverInputRef.current) coverInputRef.current.value = "";
@@ -60,22 +66,40 @@ export function GroupDetailPage() {
     );
   }
 
+  // BUG-08: langsung join untuk grup tanpa approval, modal hanya untuk yang perlu approval
+  async function handleJoinClick() {
+    if (!group.require_approval) {
+      try {
+        await join(undefined);
+        toast("Berhasil bergabung ke grup!", "success");
+      } catch (err) {
+        toast(err instanceof ApiError ? err.message : "Gagal bergabung", "error");
+      }
+    } else {
+      setJoinError(null);
+      setJoinOpen(true);
+    }
+  }
+
+  // BUG-07: tampilkan pesan error dari API, bukan generic alert
   async function handleJoin() {
+    setJoinError(null);
     try {
       await join(message || undefined);
       setJoinOpen(false);
       setMessage("");
-    } catch {
-      alert("Gagal bergabung");
+      toast("Permintaan bergabung terkirim!", "success");
+    } catch (err) {
+      setJoinError(err instanceof ApiError ? err.message : "Gagal bergabung");
     }
   }
 
-  async function handleLeave() {
-    if (!confirm("Yakin ingin keluar dari grup ini?")) return;
+  async function handleLeaveConfirm() {
     try {
       await leave();
-    } catch {
-      alert("Gagal keluar");
+      toast("Berhasil keluar dari grup", "info");
+    } catch (err) {
+      toast(err instanceof ApiError ? err.message : "Gagal keluar", "error");
     }
   }
 
@@ -151,8 +175,8 @@ export function GroupDetailPage() {
               isMember={isMember}
               myRequest={myRequest}
               isOpen={group.is_open}
-              onJoin={() => setJoinOpen(true)}
-              onLeave={handleLeave}
+              onJoin={handleJoinClick}
+              onLeave={() => setLeaveOpen(true)}
             />
           </div>
           <div className="flex items-start gap-2.5 pt-2 border-t border-border-dim">
@@ -202,42 +226,49 @@ export function GroupDetailPage() {
       {/* Admin panel */}
       {isAdmin && <GroupAdminPanel group={group} groupId={id} onRefetch={refetch} />}
 
-      {/* Join modal */}
-      <Modal open={joinOpen} onClose={() => setJoinOpen(false)} title="Bergabung ke Grup">
+      {/* Join modal — hanya untuk requireApproval: true */}
+      <Modal
+        open={joinOpen}
+        onClose={() => { setJoinOpen(false); setJoinError(null); setMessage(""); }}
+        title="Bergabung ke Grup"
+      >
         <div className="space-y-4">
           <p className="text-sm text-muted">
-            {group.require_approval
-              ? "Permintaanmu perlu disetujui admin terlebih dahulu."
-              : "Kamu akan langsung bergabung ke grup ini."}
+            Permintaanmu perlu disetujui admin terlebih dahulu.
           </p>
-          {group.require_approval && (
-            <div>
-              <label className="text-[10px] font-medium text-muted uppercase tracking-widest block mb-1.5">
-                Pesan (opsional)
-              </label>
-              <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Ceritakan sedikit tentang kamu..."
-                rows={3}
-                className="w-full text-sm border border-border bg-surface text-fg rounded px-3 py-2 focus:border-ascent focus:outline-none resize-none placeholder-muted"
-              />
-            </div>
+          <div>
+            <label className="text-[10px] font-medium text-muted uppercase tracking-widest block mb-1.5">
+              Pesan (opsional)
+            </label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Ceritakan sedikit tentang kamu..."
+              rows={3}
+              className="w-full text-sm border border-border bg-surface text-fg rounded px-3 py-2 focus:border-ascent focus:outline-none resize-none placeholder-muted"
+            />
+          </div>
+          {joinError && (
+            <p className="text-xs text-danger">{joinError}</p>
           )}
           <button
             onClick={handleJoin}
             disabled={busy}
             className="w-full bg-accent text-bg text-sm font-medium py-2.5 rounded hover:bg-accent-glow disabled:opacity-50 transition-colors"
           >
-            {busy
-              ? "Memproses..."
-              : group.require_approval
-                ? "Kirim Permintaan"
-                : "Bergabung"}
+            {busy ? "Memproses..." : "Kirim Permintaan"}
           </button>
         </div>
       </Modal>
+
+      {/* Leave confirm modal */}
+      <ConfirmModal
+        open={leaveOpen}
+        onClose={() => setLeaveOpen(false)}
+        onConfirm={handleLeaveConfirm}
+        message="Yakin ingin keluar dari grup ini?"
+        confirmLabel="Keluar"
+      />
     </div>
   );
 }
-

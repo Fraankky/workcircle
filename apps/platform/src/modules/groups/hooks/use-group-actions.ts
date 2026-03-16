@@ -26,7 +26,7 @@ export function useGroupActions(groupId: string, onSuccess?: () => void) {
 
   const kickMutation = useMutation({
     mutationFn: (userId: string) =>
-      api.post(`/api/groups/${groupId}/kick`, { user_id: userId }),
+      api.post(`/api/groups/${groupId}/kick`, { userId }),
     onSuccess: invalidate,
   });
 

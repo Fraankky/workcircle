@@ -17,7 +17,7 @@ export type GroupFull = Prisma.GroupGetPayload<{
     members: {
       include: { user: { select: { id: true; name: true; avatarUrl: true; jobTitle: true; company: true; plan: true } } };
     };
-    _count: { select: { joinRequests: true } };
+    _count: { select: { joinRequests: { where: { status: "pending" } } } };
   };
 }>;
 
@@ -76,6 +76,7 @@ export function formatGroupFull(g: GroupFull, showChatLink = false) {
     chat_link: showChatLink ? g.chatLink : null,
     chat_type: showChatLink ? g.chatType : null,
     cover_url: g.coverUrl,
+    member_count: g.members.length,
     pending_count: g._count.joinRequests,
     created_at: g.createdAt.toISOString(),
     updated_at: g.updatedAt.toISOString(),

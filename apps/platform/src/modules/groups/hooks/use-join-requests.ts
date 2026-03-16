@@ -23,6 +23,7 @@ export function useJoinRequests(groupId: string): JoinRequestsState {
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: qk.joinRequests(groupId) });
     queryClient.invalidateQueries({ queryKey: qk.group(groupId) });
+    queryClient.invalidateQueries({ queryKey: qk.myGroups() });
   };
 
   const approveMutation = useMutation({
@@ -35,7 +36,7 @@ export function useJoinRequests(groupId: string): JoinRequestsState {
     mutationFn: ({ requestId, reason }: { requestId: string; reason?: string }) =>
       api.patch(`/api/groups/${groupId}/join-requests/${requestId}`, {
         action: "reject",
-        rejection_reason: reason,
+        rejectionReason: reason,
       }),
     onSuccess: invalidate,
   });

@@ -60,7 +60,7 @@ export function NotificationBell() {
 
       {open && (
         <div
-          className="fixed w-80 border border-border rounded shadow-2xl z-9999 overflow-hidden"
+          className="fixed w-80 border border-border rounded shadow-2xl z-[9999] overflow-hidden"
           style={{
             top: dropdownPos.top,
             left: dropdownPos.left,

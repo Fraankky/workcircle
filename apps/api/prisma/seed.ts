@@ -78,6 +78,22 @@ async function main() {
     },
   });
 
+  // Admin user — super admin untuk akses panel admin
+  const admin = await prisma.user.create({
+    data: {
+      email: "admin@workcircle.app",
+      password: PASSWORD_HASH,
+      name: "WorkCircle Admin",
+      bio: "Super admin account for WorkCircle platform",
+      jobTitle: "Admin",
+      company: "WorkCircle",
+      location: "Jakarta",
+      profileComplete: true,
+      plan: "free",
+      isAdmin: true,
+    },
+  });
+
   // ──── Spaces (3 lokasi, cukup untuk demo map & filter) ────
   console.log("Creating spaces...");
 
@@ -424,10 +440,9 @@ async function main() {
       { userId: budi.id, groupId: contentGroup.id, role: "admin" },
       { userId: rina.id, groupId: growthGroup.id, role: "admin" },
 
-      // andi: member di tech & deep work, sudah join
+      // andi: member di 2 grup (free user limit = 3, masih bisa join 1 lagi untuk demo)
       { userId: andi.id, groupId: techGroup.id, role: "member" },
       { userId: andi.id, groupId: deepWorkGroup.id, role: "member" },
-      { userId: andi.id, groupId: ngopGroup.id, role: "member" },
 
       // budi: member di tech group + remote group
       { userId: budi.id, groupId: techGroup.id, role: "member" },
@@ -457,6 +472,7 @@ async function main() {
           "Halo! Saya Creative Director tapi lagi belajar coding untuk improve kolaborasi sama developer. Boleh join?",
       },
       // pending — andi mau join startup group (untuk demo waitlist di sisi admin budi)
+      // andi: 2 member + 1 pending = 3 total (tepat di limit free user)
       {
         groupId: startupGroup.id,
         userId: andi.id,
@@ -472,19 +488,12 @@ async function main() {
         message: "PM yang ingin belajar design thinking untuk product development.",
         reviewedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
       },
-      // pending — andi mau join remote group (waitlist kedua untuk admin sari)
+      // pending — rina mau join remote group (waitlist untuk admin sari)
       {
         groupId: remoteGroup.id,
-        userId: andi.id,
+        userId: rina.id,
         status: "pending",
-        message: "WFH udah 2 tahun dan pengen kerja bareng orang lain lagi. Boleh join?",
-      },
-      // pending — andi mau join growth group
-      {
-        groupId: growthGroup.id,
-        userId: andi.id,
-        status: "pending",
-        message: "Sebagai designer, pengen belajar lebih banyak tentang growth & marketing.",
+        message: "Pengen kerja dari berbagai tempat sambil tetap produktif. Boleh join?",
       },
     ],
   });
@@ -528,14 +537,14 @@ async function main() {
   console.log("  Sudirman    → Kumpul Coworking");
   console.log("  Jakpus      → Kolega Co-Working, Sejiwa Coffee Menteng");
   console.log("\n📋 Demo accounts (password: password123):");
-  console.log("  andi@example.com  → FREE  | member: Ngoding Bareng, Deep Work, Ngopi");
-  console.log("                             | pending: Startup Founders, Remote Worker, Growth Circle");
-  console.log("  sari@example.com  → PRO   | admin: Ngoding Bareng + Deep Work + Remote Worker");
-  console.log("                             | pending masuk: 2 (Rina → Ngoding, Andi → Remote)");
-  console.log("  budi@example.com  → PRO   | admin: Startup Founders + Ngopi + Content Creator");
-  console.log("                             | pending masuk: 1 (Andi → Startup)");
-  console.log("  rina@example.com  → TEAM  | admin: Design Jam + Growth & Marketing");
-  console.log("                             | pending masuk: 1 (Andi → Growth)");
+  console.log("  andi@example.com   → FREE  | member: Ngoding Bareng, Deep Work | pending: Startup Founders");
+  console.log("                              | total: 3 (tepat di limit free user)");
+  console.log("  sari@example.com   → PRO   | admin: Ngoding Bareng + Deep Work + Remote Worker");
+  console.log("                              | pending masuk: 2 (Rina → Ngoding, Rina → Remote)");
+  console.log("  budi@example.com   → PRO   | admin: Startup Founders + Ngopi + Content Creator");
+  console.log("                              | pending masuk: 1 (Andi → Startup)");
+  console.log("  rina@example.com   → TEAM  | admin: Design Jam + Growth & Marketing");
+  console.log("  admin@workcircle.app → FREE | Super Admin (isAdmin: true) | akses /admin");
 }
 
 main()

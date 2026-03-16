@@ -3,7 +3,9 @@ import { AppError } from "../exceptions.js";
 import type { Context } from "../types.js";
 
 export const errorHandler: ErrorHandler<Context> = (err, c) => {
-  console.error("Error:", err);
+  if (!(err instanceof AppError) || err.status >= 500) {
+    console.error("Error:", err);
+  }
 
   if (err instanceof AppError) {
     return c.json(

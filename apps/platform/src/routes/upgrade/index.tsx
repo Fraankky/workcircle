@@ -4,11 +4,15 @@ import { useSubscription } from "../../modules/subscriptions/hooks/use-subscript
 import { useAuth } from "../../modules/auth/hooks";
 import { formatRelative } from "../../lib/utils";
 import { PageHeader } from "../../components/ui/page-header";
+import { ConfirmModal } from "../../components/ui/confirm-modal";
+import { useToast } from "../../components/ui/toast";
 
 export function UpgradePage() {
   const { user } = useAuth();
   const { subscription, upgrade, cancel } = useSubscription();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const currentPlan = (user?.plan === "team" ? "pro" : user?.plan) ?? "free";
 
@@ -18,19 +22,18 @@ export function UpgradePage() {
       await upgrade(plan);
       // upgrade() redirects to Mayar — page will navigate away
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal membuat link pembayaran");
+      toast(err instanceof Error ? err.message : "Gagal membuat link pembayaran", "error");
       setIsLoading(false);
     }
-    // Don't set loading false on success — user is being redirected to Mayar
   }
 
-  async function handleCancel() {
-    if (!confirm("Yakin ingin membatalkan langganan?")) return;
+  async function handleCancelConfirm() {
     setIsLoading(true);
     try {
       await cancel();
+      toast("Langganan berhasil dibatalkan", "info");
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal membatalkan");
+      toast(err instanceof Error ? err.message : "Gagal membatalkan", "error");
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +56,7 @@ export function UpgradePage() {
           </div>
           {subscription.status === "active" && (
             <button
-              onClick={handleCancel}
+              onClick={() => setCancelOpen(true)}
               disabled={isLoading}
               className="text-xs text-danger/60 hover:text-danger disabled:opacity-50 transition-colors"
             >
@@ -80,6 +83,15 @@ export function UpgradePage() {
       <p className="text-[10px] text-faint text-center">
         Pembayaran diproses secara aman melalui Mayar.id. Kamu akan diarahkan ke halaman pembayaran Mayar.
       </p>
+
+      <ConfirmModal
+        open={cancelOpen}
+        onClose={() => setCancelOpen(false)}
+        onConfirm={handleCancelConfirm}
+        message="Yakin ingin membatalkan langganan? Plan kamu akan kembali ke Free."
+        confirmLabel="Batalkan Langganan"
+        isLoading={isLoading}
+      />
     </div>
   );
 }

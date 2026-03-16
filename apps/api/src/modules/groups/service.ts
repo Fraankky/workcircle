@@ -20,7 +20,7 @@ const GROUP_FULL_INCLUDE = {
     },
     orderBy: { joinedAt: "asc" as const },
   },
-  _count: { select: { joinRequests: true } },
+  _count: { select: { joinRequests: { where: { status: "pending" as const } } } },
 } as const;
 
 export async function listGroups(query: ListGroupsQuery) {
@@ -77,27 +77,34 @@ async function listGroupsFts(query: { page: number; limit: number; category?: st
   const { page, limit, category, search, sort } = query;
   const offset = (page - 1) * limit;
 
-  const categoryFilter = category ? `AND category::text = '${category}'` : "";
+  const queryParams: (string | number)[] = [search, limit, offset];
+  let categoryFilter = "";
+  if (category) {
+    queryParams.push(category);
+    categoryFilter = `AND category::text = $${queryParams.length}`;
+  }
   const orderByClause =
     sort === "popular"
       ? "ORDER BY member_count DESC"
       : "ORDER BY g.created_at DESC";
 
-  const rawGroups = await prisma.$queryRawUnsafe<(RawGroup & { rank: number })[]>(`
-    SELECT g.*,
-           ts_rank(g.search_vector, plainto_tsquery('simple', $1)) AS rank
+  const rawGroups = await prisma.$queryRawUnsafe<(RawGroup & { rank: number })[]>(
+    `SELECT g.*,
+            ts_rank(g.search_vector, plainto_tsquery('simple', $1)) AS rank
     FROM groups g
     WHERE g.search_vector @@ plainto_tsquery('simple', $1)
     ${categoryFilter}
     ${orderByClause}
     LIMIT $2 OFFSET $3
-  `, search, limit, offset);
+  `, ...queryParams);
 
-  const [{ count }] = await prisma.$queryRawUnsafe<[{ count: bigint }]>(`
-    SELECT count(*) FROM groups g
+  const countParams = category ? [search, category] : [search];
+  const countCategoryFilter = category ? `AND category::text = $2` : "";
+  const [{ count }] = await prisma.$queryRawUnsafe<[{ count: bigint }]>(
+    `SELECT count(*) FROM groups g
     WHERE g.search_vector @@ plainto_tsquery('simple', $1)
-    ${categoryFilter}
-  `, search);
+    ${countCategoryFilter}
+  `, ...countParams);
 
   const total = Number(count);
 

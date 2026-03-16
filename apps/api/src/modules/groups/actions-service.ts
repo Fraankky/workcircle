@@ -13,6 +13,7 @@ export async function leaveGroup(groupId: string, userId: string) {
   if (!membership) throw new NotFoundError("Kamu bukan anggota grup ini");
 
   await prisma.groupMember.delete({ where: { userId_groupId: { userId, groupId } } });
+  await prisma.groupJoinRequest.deleteMany({ where: { userId, groupId } });
   await recalcIsOpen(groupId);
 }
 
@@ -27,5 +28,6 @@ export async function kickMember(groupId: string, targetUserId: string, adminId:
   if (!membership) throw new NotFoundError("Member tidak ditemukan");
 
   await prisma.groupMember.delete({ where: { userId_groupId: { userId: targetUserId, groupId } } });
+  await prisma.groupJoinRequest.deleteMany({ where: { userId: targetUserId, groupId } });
   await recalcIsOpen(groupId);
 }
