@@ -68,6 +68,7 @@ export function GroupDetailPage() {
 
   // BUG-08: langsung join untuk grup tanpa approval, modal hanya untuk yang perlu approval
   async function handleJoinClick() {
+    if (!group) return;
     if (!group.require_approval) {
       try {
         await join(undefined);
